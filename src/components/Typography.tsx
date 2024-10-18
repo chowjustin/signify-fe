@@ -65,13 +65,13 @@ export default function Typography<T extends React.ElementType>({
         ],
         // *=============== Font Variants ==================
         [
-          variant === "h1" && ["md:text-[80px] md:leading-[96px]"],
-          variant === "h2" && ["md:text-[72px] md:leading-[90px]"],
-          variant === "h3" && ["md:text-[64px] md:leading-[84px]"],
-          variant === "h4" && ["md:text-[48px] md:leading-[64px]"],
-          variant === "h5" && ["md:text-[32px] md:leading-[48px]"],
-          variant === "h6" && ["md:text-[24px] md:leading-[32px]"],
-          variant === "p" && ["md:text-[18px] md:leading-[24px]"],
+          variant === "h1" && ["sm:text-[80px] sm:leading-[96px]"],
+          variant === "h2" && ["sm:text-[72px] sm:leading-[90px]"],
+          variant === "h3" && ["sm:text-[64px] sm:leading-[84px]"],
+          variant === "h4" && ["sm:text-[48px] sm:leading-[64px]"],
+          variant === "h5" && ["sm:text-[32px] sm:leading-[48px]"],
+          variant === "h6" && ["sm:text-[24px] sm:leading-[32px]"],
+          variant === "p" && ["sm:text-[18px] sm:leading-[24px]"],
         ],
         className,
       )}

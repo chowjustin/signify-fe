@@ -7,6 +7,7 @@ import UnstyledLink, {
 import clsxm from "@/lib/clsxm";
 
 const ButtonLinkVariant = [
+  "primary",
   "blue",
   "green",
   "yellow",
@@ -30,7 +31,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
     {
       children,
       className,
-      variant = "blue",
+      variant = "primary",
       size = "base",
       leftIcon: LeftIcon,
       rightIcon: RightIcon,
@@ -45,7 +46,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
         ref={ref}
         type="button"
         className={clsxm(
-          "inline-flex items-center justify-center rounded-lg font-medium",
+          "inline-flex items-center justify-center rounded-[15px] font-medium",
           "focus:outline-none focus-visible:ring",
           "shadow-sm",
           "transition-colors duration-75",
@@ -67,6 +68,14 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
           //#endregion  //*======== Size ===========
           //#region  //*=========== Variants ===========
           [
+            variant === "primary" && [
+              "bg-[#4FD1C5] text-white",
+              "border border-[#2AC5B6]",
+              "hover:bg-[#2AC5B6] hover:text-white",
+              "active:bg-[#2EB0A4]",
+              "disabled:bg-[#2EB0A4]",
+              "focus-visible:ring-[#48E5D6]",
+            ],
             variant === "blue" && [
               "bg-blue-500 text-white",
               "border border-blue-600",
@@ -100,9 +109,11 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
               "focus-visible:ring-yellow-400",
             ],
             variant === "outline" && [
-              "text-black",
-              "border border-gray-300",
-              "hover:bg-slate-200 focus-visible:ring-gray-400 active:bg-slate-500 disabled:bg-slate-500",
+              "text-[#4FD1C5]",
+              "border-[2.5px] border-[#4FD1C5]",
+              "hover:border-[#2EB0A4] hover:text-[#2EB0A4]",
+              "active:bg-[#F2FFFE]",
+              "focus-visible:ring-[#C7FFFA]",
             ],
             variant === "ghost" && [
               "text-neutral-500",

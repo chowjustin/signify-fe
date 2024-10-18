@@ -7,8 +7,94 @@ import ButtonLink from "@/components/links/ButtonLink";
 
 export default function ButtonPage() {
   return (
-    <main className="min-h-screen items-center justify-center bg-slate-200 py-20">
+    <main className="min-h-screen items-center justify-center bg-white py-20">
       <section className="flex flex-col gap-8 px-24">
+        <div>
+          <Typography as="h2" variant="h2">
+            Primary
+          </Typography>
+          <div className="mt-3 flex flex-wrap items-end gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Primary Button
+            </Button>
+            <Button
+              variant="primary"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Primary Button
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Primary Button
+            </Button>
+          </div>
+          <div className="mt-3 flex flex-wrap items-end gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              disabled
+            >
+              Primary Disabled
+            </Button>
+            <Button
+              variant="primary"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              disabled
+            >
+              Primary Disabled
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              disabled
+            >
+              Primary Disabled
+            </Button>
+          </div>
+          <div className="mt-3 flex flex-wrap items-end gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              isLoading
+            >
+              Primary Disabled
+            </Button>
+            <Button
+              variant="primary"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              isLoading
+            >
+              Primary Disabled
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+              isLoading
+            >
+              Primary Disabled
+            </Button>
+          </div>
+        </div>
         <div>
           <Typography as="h2" variant="h2">
             Blue
@@ -492,7 +578,7 @@ export default function ButtonPage() {
           <div className="mt-3 flex flex-wrap items-end gap-3">
             <ButtonLink
               href="/"
-              variant="blue"
+              variant="primary"
               size="lg"
               leftIcon={BiPlus}
               rightIcon={BsArrowRight}
@@ -501,11 +587,39 @@ export default function ButtonPage() {
             </ButtonLink>
             <ButtonLink
               href="/"
-              variant="blue"
+              variant="primary"
               leftIcon={BiPlus}
               rightIcon={BsArrowRight}
             >
               Button Link
+            </ButtonLink>
+            <ButtonLink
+              href="/"
+              variant="primary"
+              size="sm"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Button Link
+            </ButtonLink>
+          </div>
+          <div className="mt-3 flex flex-wrap items-end gap-3">
+            <ButtonLink
+              href="/"
+              variant="blue"
+              size="lg"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Blue Button Link
+            </ButtonLink>
+            <ButtonLink
+              href="/"
+              variant="blue"
+              leftIcon={BiPlus}
+              rightIcon={BsArrowRight}
+            >
+              Blue Button Link
             </ButtonLink>
             <ButtonLink
               href="/"
@@ -514,7 +628,7 @@ export default function ButtonPage() {
               leftIcon={BiPlus}
               rightIcon={BsArrowRight}
             >
-              Button Link
+              Blue Button Link
             </ButtonLink>
           </div>
           <div className="mt-3 flex flex-wrap items-end gap-3">

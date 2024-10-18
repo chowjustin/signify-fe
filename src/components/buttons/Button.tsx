@@ -5,6 +5,7 @@ import { ImSpinner } from "react-icons/im";
 import clsxm from "@/lib/clsxm";
 
 const ButtonVariant = [
+  "primary",
   "blue",
   "green",
   "yellow",
@@ -31,7 +32,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       disabled: buttonDisabled,
       isLoading,
-      variant = "blue",
+      variant = "primary",
       size = "base",
       leftIcon: LeftIcon,
       rightIcon: RightIcon,
@@ -49,7 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type="button"
         disabled={disabled}
         className={clsxm(
-          "inline-flex items-center justify-center rounded-lg font-medium",
+          "inline-flex items-center justify-center rounded-[15px] font-medium",
           "focus:outline-none focus-visible:ring",
           "shadow-sm",
           "transition-colors duration-75",
@@ -71,6 +72,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           //#endregion  //*======== Size ===========
           //#region  //*=========== Variants ===========
           [
+            variant === "primary" && [
+              "bg-[#4FD1C5] text-white",
+              "border border-[#2AC5B6]",
+              "hover:bg-[#2AC5B6] hover:text-white",
+              "active:bg-[#2EB0A4]",
+              "disabled:bg-[#2EB0A4]",
+              "focus-visible:ring-[#48E5D6]",
+            ],
             variant === "blue" && [
               "bg-blue-500 text-white",
               "border border-blue-600",
@@ -104,9 +113,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               "focus-visible:ring-yellow-400",
             ],
             variant === "outline" && [
-              "text-black",
-              "border border-gray-300",
-              "hover:bg-slate-200 focus-visible:ring-gray-400 active:bg-slate-500 disabled:bg-slate-500",
+              "text-[#4FD1C5]",
+              "border-[2.5px] border-[#4FD1C5]",
+              "hover:border-[#2EB0A4] hover:text-[#2EB0A4]",
+              "active:bg-[#F2FFFE]",
+              "focus-visible:ring-[#C7FFFA]",
             ],
             variant === "ghost" && [
               "text-neutral-500",
@@ -127,10 +138,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className={clsxm(
               "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
               {
-                "text-white": ["blue", "green", "red", "yellow"].includes(
-                  variant,
-                ),
-                "text-blue-500": ["outline", "ghost"].includes(variant),
+                "text-white": [
+                  "primary",
+                  "blue",
+                  "green",
+                  "red",
+                  "yellow",
+                ].includes(variant),
+                "text-[#4FD1C5]": ["outline", "ghost"].includes(variant),
               },
             )}
           >
