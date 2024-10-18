@@ -1,15 +1,15 @@
-import * as React from "react";
 import Link from "next/link";
-import {
-  FiChevronsRight,
-  FiChevronsLeft,
-  FiSettings,
-  FiLogOut,
-} from "react-icons/fi";
-import IconButton from "./buttons/IconButton";
-import NextImage from "./NextImage";
-import { IconType } from "react-icons";
 import { usePathname } from "next/navigation";
+import * as React from "react";
+import { IconType } from "react-icons";
+import {
+  FiChevronsLeft,
+  FiChevronsRight,
+  FiLogOut,
+  FiSettings,
+} from "react-icons/fi";
+import NextImage from "./NextImage";
+import IconButton from "./buttons/IconButton";
 
 type SidenavProps = {
   topNav: {
