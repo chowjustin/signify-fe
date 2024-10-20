@@ -17,14 +17,14 @@ const NavbarLinks = [
     link: "/sandbox",
   },
   {
-    title: "Profile",
+    title: "Button",
     icon: FaRegUser,
-    link: "/button",
+    link: "/sandbox/button",
   },
   {
-    title: "Sign In",
+    title: "Form",
     icon: FiFileText,
-    link: "/form",
+    link: "/sandbox/form",
   },
   {
     title: "Sign Up",
