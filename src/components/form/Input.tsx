@@ -61,14 +61,14 @@ export default function Input({
       <div className="relative flex w-full gap-0">
         <div
           className={clsxm(
-            "pointer-events-none absolute h-full w-full rounded-md border-gray-300 ring-1 ring-inset ring-gray-500",
+            "pointer-events-none absolute h-full w-full rounded-[15px] border-gray-300 ring-1 ring-inset ring-gray-500",
           )}
         />
 
         {prefix && (
           <Typography
             variant="p"
-            className="flex w-min items-center rounded-l-md border-r bg-slate-50 px-3 text-sm text-gray-600"
+            className="flex w-min items-center rounded-l-[15px] border-r bg-slate-50 px-3 text-sm text-gray-600"
           >
             {prefix}
           </Typography>
@@ -76,9 +76,9 @@ export default function Input({
 
         <div
           className={clsxm(
-            "relative w-full rounded-md",
-            prefix && "rounded-l-md",
-            suffix && "rounded-r-md",
+            "relative w-full rounded-[15px]",
+            prefix && "rounded-l-[15px]",
+            suffix && "rounded-r-[15px]",
           )}
         >
           {LeftIcon && (
@@ -104,18 +104,18 @@ export default function Input({
             readOnly={readOnly}
             disabled={readOnly}
             className={clsxm(
-              "h-full w-full rounded-md border border-gray-500 px-3 py-2.5 caret-gray-900",
+              "h-full w-full rounded-[15px] border border-[#E2E8F0] px-[20px] py-[15px] caret-[#4FD1C5]",
               [LeftIcon && "pl-9", RightIcon && "pr-9"],
-              "focus:outline-1 focus:outline-gray-900 focus:ring-inset",
-              "bg-slate-50 text-sm",
-              "hover:ring-1 hover:ring-inset hover:ring-gray-900",
+              "focus:outline-1 focus:outline-[#4FD1C5] focus:ring-inset",
+              "text-sm focus:bg-slate-50",
+              "hover:ring-1 hover:ring-inset hover:ring-[#4FD1C5]",
               "placeholder:text-sm placeholder:text-gray-500",
               "text-gray-900",
               readOnly && "cursor-not-allowed",
               error &&
                 "border-none ring-2 ring-inset ring-red-500 placeholder:text-gray-500 focus:ring-red-500",
-              prefix && "rounded-l-none rounded-r-md ",
-              suffix && "rounded-l-md rounded-r-none",
+              prefix && "rounded-l-none rounded-r-[15px] ",
+              suffix && "rounded-l-[15px] rounded-r-none",
               prefix && suffix && "rounded-none",
               className,
             )}
@@ -154,7 +154,7 @@ export default function Input({
         {suffix && (
           <Typography
             variant="p"
-            className="flex w-min items-center rounded-r-md border-l bg-slate-50 px-3 text-sm text-gray-600"
+            className="flex w-min items-center rounded-r-[15px] border-l bg-slate-50 px-3 text-sm text-gray-600"
           >
             {suffix}
           </Typography>
