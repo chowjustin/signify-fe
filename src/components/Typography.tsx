@@ -10,6 +10,7 @@ export enum TypographyVariant {
   h5,
   h6,
   p,
+  sm,
 }
 
 enum FontVariant {
@@ -72,6 +73,7 @@ export default function Typography<T extends React.ElementType>({
           variant === "h5" && ["sm:text-[32px] sm:leading-[48px]"],
           variant === "h6" && ["sm:text-[24px] sm:leading-[32px]"],
           variant === "p" && ["sm:text-[18px] sm:leading-[24px]"],
+          variant === "sm" && ["sm:text-[14px] sm:leading-[20px]"],
         ],
         className,
       )}

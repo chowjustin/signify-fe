@@ -1,5 +1,5 @@
 "use client";
-import Sidenav from "@/components/Sidebar";
+import Sidebar from "@/components/Sidebar";
 import { ReactNode } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
@@ -14,29 +14,29 @@ const NavbarLinks = [
   {
     title: "Home",
     icon: IoHome,
-    link: "/sandbox",
+    link: "/",
   },
   {
-    title: "Button",
+    title: "Profile",
     icon: FaRegUser,
-    link: "/sandbox/button",
+    link: "/profile",
   },
   {
-    title: "Form",
+    title: "Tambah Ajuan",
     icon: FiFileText,
-    link: "/sandbox/form",
+    link: "/ajuan",
   },
   {
-    title: "Sign Up",
+    title: "Dashboard",
     icon: MdRocketLaunch,
-    link: "/register",
+    link: "/dashboard",
   },
 ];
 
 const ChildrenLayout = ({ children }: ChildrenLayoutProps) => {
   return (
     <div className="flex max-h-screen h-screen max-w-screen w-screen">
-      <Sidenav topNav={NavbarLinks} />
+      <Sidebar topNav={NavbarLinks} />
       <div className="hidden lg:flex flex-col max-h-screen h-full w-full">
         <div className="max-h-screen h-nav overflow-y-auto">{children}</div>
       </div>

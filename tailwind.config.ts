@@ -17,6 +17,11 @@ const config: Config = {
       fontFamily: {
         inter: ["(var(--font-inter))"],
       },
+      colors: {
+        primary: "#4FD1C5",
+        hover: "#2AC5B6",
+        active: "#2EB0A4",
+      },
       keyframes: {
         typing: {
           "0%": {

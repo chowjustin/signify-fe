@@ -6,10 +6,7 @@ import { getToken } from "@/lib/cookies";
 import { UninterceptedApiError } from "@/types/api";
 const context = <GetServerSidePropsContext>{};
 
-export const baseURL =
-  process.env.NEXT_PUBLIC_RUN_MODE === "development"
-    ? process.env.NEXT_PUBLIC_API_URL_DEV
-    : process.env.NEXT_PUBLIC_API_URL_PROD;
+export const baseURL = process.env.NEXT_PUBLIC_API_URL_DEV;
 
 export const api = axios.create({
   baseURL,
@@ -32,7 +29,7 @@ api.interceptors.request.use(function (config) {
         throw "Api Context not found. You must call `setApiContext(context)` before calling api on server-side";
 
       const cookies = new Cookies(context.req?.headers.cookie);
-      token = cookies.get("@sch/token");
+      token = cookies.get("@signify/token");
     } else {
       token = getToken();
     }

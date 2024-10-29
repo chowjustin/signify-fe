@@ -73,11 +73,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           //#region  //*=========== Variants ===========
           [
             variant === "primary" && [
-              "bg-[#4FD1C5] text-white",
-              "border border-[#2AC5B6]",
-              "hover:bg-[#2AC5B6] hover:text-white",
-              "active:bg-[#2EB0A4]",
-              "disabled:bg-[#2EB0A4]",
+              "bg-primary text-white",
+              "border border-hover",
+              "hover:bg-hover hover:text-white",
+              "active:bg-active",
+              "disabled:bg-active",
               "focus-visible:ring-[#48E5D6]",
             ],
             variant === "blue" && [
@@ -113,9 +113,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               "focus-visible:ring-yellow-400",
             ],
             variant === "outline" && [
-              "text-[#4FD1C5]",
-              "border-[2.5px] border-[#4FD1C5]",
-              "hover:border-[#2EB0A4] hover:text-[#2EB0A4]",
+              "text-primary",
+              "border-[2.5px] border-primary",
+              "hover:border-active hover:text-active",
               "active:bg-[#F2FFFE]",
               "focus-visible:ring-[#C7FFFA]",
             ],
@@ -145,7 +145,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   "red",
                   "yellow",
                 ].includes(variant),
-                "text-[#4FD1C5]": ["outline", "ghost"].includes(variant),
+                "text-primary": ["outline", "ghost"].includes(variant),
               },
             )}
           >

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
@@ -8,8 +10,10 @@ import {
   FiLogOut,
   FiSettings,
 } from "react-icons/fi";
-import NextImage from "./NextImage";
-import IconButton from "./buttons/IconButton";
+import NextImage from "@/components/NextImage";
+// import { LogOut } from "./modal/Logout";
+import IconButton from "@/components/buttons/IconButton";
+import { removeToken } from "@/lib/cookies";
 
 type SidenavProps = {
   topNav: {
@@ -19,7 +23,7 @@ type SidenavProps = {
   }[];
 };
 
-export default function Sidenav({ topNav }: SidenavProps) {
+export default function Sidebar({ topNav }: SidenavProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const path = usePathname();
 
@@ -94,7 +98,7 @@ export default function Sidenav({ topNav }: SidenavProps) {
           <div className="">
             <Link
               href={"/settings"}
-              className={`flex flex-row items-center space-x-5 my-6 hover:text-brand-600 ${
+              className={`flex flex-row items-center space-x-5 my-6 hover:text-hover ${
                 isOpen ? "px-12" : ""
               }`}
             >
@@ -103,17 +107,33 @@ export default function Sidenav({ topNav }: SidenavProps) {
                 Pengaturan
               </p>
             </Link>
-            <Link
-              href={"/logout"}
-              className={`flex flex-row items-center space-x-5 my-6 hover:text-brand-600 ${
+            <div
+              className={`flex flex-row items-center space-x-5 my-6 hover:text-hover ${
                 isOpen ? "px-12" : ""
               }`}
+              onClick={() => removeToken()}
             >
               <FiLogOut className={`text-2xl ${isOpen ? "" : "mx-auto"}`} />
               <p className={`text-S1 ${isOpen ? "visible" : "hidden"}`}>
-                Keluar
+                Pengaturan
               </p>
-            </Link>
+            </div>
+
+            {/* <LogOut>
+              {({ openModal }) => (
+                <div
+                  onClick={openModal}
+                  className={`flex flex-row cursor-pointer items-center space-x-5 my-6 hover:text-hover ${
+                    isOpen ? "px-12" : ""
+                  }`}
+                >
+                  <FiLogOut className={`text-2xl ${isOpen ? "" : "mx-auto"}`} />
+                  <p className={`text-S1 ${isOpen ? "visible" : "hidden"}`}>
+                    Keluar
+                  </p>
+                </div>
+              )}
+            </LogOut> */}
           </div>
         </div>
       </div>
