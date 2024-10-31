@@ -14,6 +14,7 @@ import NextImage from "@/components/NextImage";
 // import { LogOut } from "./modal/Logout";
 import IconButton from "@/components/buttons/IconButton";
 import { removeToken } from "@/lib/cookies";
+import useAuthStore from "@/app/stores/useAuthStore";
 
 type SidenavProps = {
   topNav: {
@@ -24,6 +25,8 @@ type SidenavProps = {
 };
 
 export default function Sidebar({ topNav }: SidenavProps) {
+  const { user } = useAuthStore();
+
   const [isOpen, setIsOpen] = React.useState(false);
   const path = usePathname();
 
@@ -57,8 +60,8 @@ export default function Sidebar({ topNav }: SidenavProps) {
                   </Link>
                   {isOpen && (
                     <div className="leading-[16px] ">
-                      <p className="text-[16px] font-bold">Nama</p>
-                      <p className="text-[14px]">username</p>
+                      <p className="text-[16px] font-bold">{user?.name}</p>
+                      <p className="text-[14px]">{user?.username}</p>
                     </div>
                   )}
                 </div>
@@ -115,7 +118,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
             >
               <FiLogOut className={`text-2xl ${isOpen ? "" : "mx-auto"}`} />
               <p className={`text-S1 ${isOpen ? "visible" : "hidden"}`}>
-                Pengaturan
+                Keluar
               </p>
             </div>
 

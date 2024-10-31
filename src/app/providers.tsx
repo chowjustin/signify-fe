@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 
 import api from "@/lib/api";
 import Loading from "@/app/loading";
+import { NextUIProvider } from "@nextui-org/react";
 
 const defaultQueryFn = async ({ queryKey }: QueryOptions) => {
   const { data } = await api.get(`${queryKey?.[0]}`);
@@ -26,8 +27,10 @@ const queryClient = new QueryClient({
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster position="top-center" />
-      <React.Suspense fallback={<Loading />}>{children}</React.Suspense>
+      <NextUIProvider>
+        <Toaster position="top-center" />
+        <React.Suspense fallback={<Loading />}>{children}</React.Suspense>
+      </NextUIProvider>
     </QueryClientProvider>
   );
 }
