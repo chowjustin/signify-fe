@@ -5,6 +5,7 @@ import Button from "@/components/buttons/Button";
 import Modal from "./Modal";
 import { removeToken } from "@/lib/cookies";
 import { useRouter } from "next/navigation";
+import Typography from "../Typography";
 
 type ModalReturnType = {
   openModal: () => void;
@@ -32,7 +33,7 @@ export function LogOut({
         onOpenChange={onOpenChange}
         backdrop="opaque"
         backdropClassName="bg-[#17171F] bg-opacity-60"
-        className="w-[400px] flex mx-auto border-none"
+        className="w-[90%] md:w-[400px] flex mx-auto border-none"
       >
         <Modal.Header
           className="flex justify-center mt-10"
@@ -47,8 +48,12 @@ export function LogOut({
         </Modal.Header>
 
         <Modal.Body className="text-center px-10 mt-5">
-          <h1 className="text-H1 text-[#1F2937]">Peringatan!</h1>
-          <p className="text-S1 text-[#6B7280]">
+          <h1 className="text-[#1F2937]">
+            <Typography variant="h6" weight="bold">
+              Peringatan!
+            </Typography>
+          </h1>
+          <p className="text-[#6B7280] -mt-2">
             Apakah anda yakin ingin log out?
           </p>
         </Modal.Body>
@@ -56,7 +61,7 @@ export function LogOut({
         <Modal.Footer className="mt-5 mb-8">
           <div className="flex justify-center gap-4">
             <Button
-              variant="primary"
+              variant="outline"
               size="base"
               className="min-h-8 max-w-24 px-9 py-0.5"
               onClick={onClose}
@@ -70,7 +75,7 @@ export function LogOut({
               onClick={() => {
                 removeToken();
                 onClose();
-                router.push("/signin");
+                router.replace("/signin");
               }}
             >
               Ya

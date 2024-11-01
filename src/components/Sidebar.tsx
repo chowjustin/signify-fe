@@ -11,10 +11,9 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import NextImage from "@/components/NextImage";
-// import { LogOut } from "./modal/Logout";
 import IconButton from "@/components/buttons/IconButton";
-import { removeToken } from "@/lib/cookies";
 import useAuthStore from "@/app/stores/useAuthStore";
+import { LogOut } from "./modal/Logout";
 
 type SidenavProps = {
   topNav: {
@@ -110,19 +109,8 @@ export default function Sidebar({ topNav }: SidenavProps) {
                 Pengaturan
               </p>
             </Link>
-            <div
-              className={`flex flex-row items-center space-x-5 my-6 hover:text-hover ${
-                isOpen ? "px-12" : ""
-              }`}
-              onClick={() => removeToken()}
-            >
-              <FiLogOut className={`text-2xl ${isOpen ? "" : "mx-auto"}`} />
-              <p className={`text-S1 ${isOpen ? "visible" : "hidden"}`}>
-                Keluar
-              </p>
-            </div>
 
-            {/* <LogOut>
+            <LogOut>
               {({ openModal }) => (
                 <div
                   onClick={openModal}
@@ -136,7 +124,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
                   </p>
                 </div>
               )}
-            </LogOut> */}
+            </LogOut>
           </div>
         </div>
       </div>
