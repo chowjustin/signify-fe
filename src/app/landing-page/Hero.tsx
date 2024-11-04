@@ -1,9 +1,18 @@
+"use client";
+
+import Aos from "aos";
+import * as React from "react";
+
 import ButtonLink from "@/components/links/ButtonLink";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
 import { cn } from "@nextui-org/theme";
 
 export default function Hero() {
+  React.useEffect(() => {
+    Aos.init({ duration: 1000 });
+  }, []);
+
   return (
     <section
       className="h-screen w-full relative flex items-center justify-center"
@@ -23,10 +32,14 @@ export default function Hero() {
           variant="h5"
           weight="bold"
           className="text-center text-[28px] leading-[40px] md:text-[40px] md:leading-[56px] xl:text-[72px] xl:leading-[90px]"
+          data-aos="zoom-in"
         >
           Discover the power of <br /> our products!
         </Typography>
-        <Typography className="text-center max-w-[60%] max-sm:text-[14px] mx-auto mt-16 max-sm:mt-8 max-sm:max-w-full">
+        <Typography
+          className="text-center max-w-[60%] max-sm:text-[14px] mx-auto mt-16 max-sm:mt-8 max-sm:max-w-full"
+          data-aos="fade-up"
+        >
           Signify is a streamlined document-signing web application designed to
           simplify and accelerate the signing process. With Signify, users can
           complete document signing with a single click. Users upload their
@@ -39,7 +52,11 @@ export default function Hero() {
           document approvals digitally.
         </Typography>
 
-        <div className="w-full flex justify-center gap-6 mt-12 max-sm:mt-6">
+        <div
+          className="w-full flex justify-center gap-6 mt-12 max-sm:mt-6"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
           <ButtonLink
             href="/signup"
             size="lg"
