@@ -1,7 +1,11 @@
+"use client";
+
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
+import withAuth from "@/components/hoc/withAuth";
 
-export default function Profile() {
+export default withAuth(Profile, "user");
+function Profile() {
   return (
     <main>
       <NextImage
@@ -33,10 +37,10 @@ export default function Profile() {
         {/* <NextImage className=""></NextImage> */}
         <div>
           <Typography className="text-[#2D3748]" variant="p" weight="black">
-            ProfJustin
+            Username
           </Typography>
           <Typography className="text-[#718096] font-inter font-extrabold">
-            profjustinjagobanget@gmail.com
+            email@gmail.com
           </Typography>
         </div>
       </div>
@@ -45,7 +49,7 @@ export default function Profile() {
           Profile Information
         </Typography>
         <Typography className="text-[#A0AEC0]">
-          Hi, I’m Prof Justin, Decisions: If you can’t decide, the answer is no.
+          Hi, I’m Prof Hello, Decisions: If you can’t decide, the answer is no.
           If two equally difficult paths, choose the one more painful in the
           short term (pain avoidance is creating an illusion of equality).
         </Typography>
@@ -53,7 +57,7 @@ export default function Profile() {
           <Typography className="text-[#718096]" weight="bold">
             Full Name :
           </Typography>
-          <Typography className="text-[#A0AEC0]">&nbsp;Prof Justin</Typography>
+          <Typography className="text-[#A0AEC0]">&nbsp;Prof Hello</Typography>
         </div>
         <div className="flex mt-10">
           <Typography className="text-[#718096]" weight="bold">
@@ -68,7 +72,7 @@ export default function Profile() {
             Email :
           </Typography>
           <Typography className="text-[#A0AEC0]">
-            &nbsp;profjustinjagobanget@gmail.com
+            &nbsp;profhello@gmail.com
           </Typography>
         </div>
         <div className="flex mt-10">
@@ -76,7 +80,7 @@ export default function Profile() {
             Location :
           </Typography>
           <Typography className="text-[#A0AEC0]">
-            &nbsp;Surabay Nih Bos
+            &nbsp;Surabaya Nih Bos
           </Typography>
         </div>
       </div>
