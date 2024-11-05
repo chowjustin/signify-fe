@@ -19,7 +19,7 @@ const NavbarLinks = [
   {
     title: "Profile",
     icon: FaRegUser,
-    link: "/profile",
+    link: "/dashboard/profile",
   },
   {
     title: "Tambah Ajuan",

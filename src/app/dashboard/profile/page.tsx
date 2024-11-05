@@ -1,13 +1,45 @@
 "use client";
 
+import useAuthStore from "@/app/stores/useAuthStore";
+import BreadCrumbs from "@/components/BreadCrumbs";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
 import withAuth from "@/components/hoc/withAuth";
 
+const breadCrumbs = [
+  { href: "/dashboard", Title: "Dashboard" },
+  { href: "/dashboard/profile", Title: "Profil" },
+];
+
 export default withAuth(Profile, "user");
 function Profile() {
+  const { user } = useAuthStore();
+
+  const getAccountAge = (createdDate: string): string => {
+    const createdAt = new Date(createdDate);
+    const now = new Date();
+
+    let years = now.getFullYear() - createdAt.getFullYear();
+    let months = now.getMonth() - createdAt.getMonth();
+    let days = now.getDate() - createdAt.getDate();
+
+    if (days < 0) {
+      months -= 1;
+      days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    }
+
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    return `${years} years ${months} months ${days} days`;
+  };
+
+  const accountAge = user?.createdAt ? getAccountAge(user.createdAt) : "N/A";
+
   return (
-    <main>
+    <section className="pb-12 max-h-screen">
       <NextImage
         src="/profile/Background.png"
         width={1440}
@@ -18,13 +50,10 @@ function Profile() {
         priority
       />
       <div className="relative top-[-180px] pl-10">
-        <Typography className="text-white ">Pages / Profile</Typography>
-        <Typography className="text-white" weight="bold">
-          Profile
-        </Typography>
+        <BreadCrumbs breadcrumbs={breadCrumbs} />
       </div>
 
-      <div className="w-[90%] flex gap-4 relative rounded-lg z-10 mt-[-72px] backdrop-blur-2xl shadow-lg mx-auto p-6">
+      <div className="w-[90%] flex gap-4 relative rounded-lg z-10 mt-[-72px] backdrop-blur-2xl shadow-lg  mx-auto p-6">
         <NextImage
           src="/profile/user.png"
           width={1440}
@@ -34,56 +63,45 @@ function Profile() {
           imgClassName=""
           priority
         />
-        {/* <NextImage className=""></NextImage> */}
         <div>
           <Typography className="text-[#2D3748]" variant="p" weight="black">
-            Username
+            {user?.name}
           </Typography>
-          <Typography className="text-[#718096] font-inter font-extrabold">
-            email@gmail.com
+          <Typography className="text-[#718096]" weight="regular">
+            {user?.username}
           </Typography>
         </div>
       </div>
-      <div className="w-[90%] rounded-lg z-10 mt-4 shadow-lg mx-auto p-12">
-        <Typography className="text-[#2D3748] mb-2" variant="h6" weight="bold">
-          Profile Information
-        </Typography>
-        <Typography className="text-[#A0AEC0]">
-          Hi, I’m Prof Hello, Decisions: If you can’t decide, the answer is no.
-          If two equally difficult paths, choose the one more painful in the
-          short term (pain avoidance is creating an illusion of equality).
-        </Typography>
-        <div className="flex mt-10">
-          <Typography className="text-[#718096]" weight="bold">
-            Full Name :
-          </Typography>
-          <Typography className="text-[#A0AEC0]">&nbsp;Prof Hello</Typography>
-        </div>
-        <div className="flex mt-10">
-          <Typography className="text-[#718096]" weight="bold">
-            Mobile :
-          </Typography>
-          <Typography className="text-[#A0AEC0]">
-            &nbsp;(44) 123 1234 123
-          </Typography>
-        </div>
-        <div className="flex mt-10">
+      <div className="w-[90%] rounded-lg z-10 mt-4 space-y-4  shadow-lg mx-auto p-12 max-sm:p-4">
+        <div className="flex">
           <Typography className="text-[#718096]" weight="bold">
             Email :
           </Typography>
-          <Typography className="text-[#A0AEC0]">
-            &nbsp;profhello@gmail.com
+          <Typography className="text-[#A0AEC0] break-words truncate">
+            &nbsp;{user?.email}
           </Typography>
         </div>
-        <div className="flex mt-10">
+        <div className="flex">
           <Typography className="text-[#718096]" weight="bold">
-            Location :
+            Account Age :
           </Typography>
-          <Typography className="text-[#A0AEC0]">
-            &nbsp;Surabaya Nih Bos
+          <Typography className="text-[#A0AEC0] break-words truncate">
+            &nbsp;{accountAge}
           </Typography>
+        </div>
+        <div>
+          <Typography className="text-[#718096]" weight="bold">
+            Preview TTD
+          </Typography>
+          <NextImage
+            src="/Signify Logo.png"
+            width={500}
+            height={500}
+            alt="TTD Preview"
+            className="w-[100px] object-contain md:w-[160px] mt-2 rounded-lg overflow-hidden border-2 border-[#718096] p-2"
+          />
         </div>
       </div>
-    </main>
+    </section>
   );
 }
