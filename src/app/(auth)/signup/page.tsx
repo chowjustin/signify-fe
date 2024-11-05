@@ -64,7 +64,7 @@ export default function SignUp() {
           imgClassName="w-full h-full"
         />
       </div>
-      <div className="bg-white shadow-md h-fit absolute z-10 max-h-[85dvh] custom-scrollbar rounded-[15px] max-md:px-6 max-md:py-8 px-[50px] py-12 w-full xl:max-w-[30%] md:max-w-[60%] max-w-[75%]">
+      <div className="bg-white shadow-md h-fit absolute z-10 max-h-[85dvh] max-md:min-h-[85dvh] custom-scrollbar rounded-[15px] max-md:px-6 max-md:py-8 px-[50px] py-12 w-full xl:max-w-[30%] md:max-w-[60%] max-w-[75%]">
         <FormProvider {...methods}>
           <Typography
             as="h2"
@@ -78,7 +78,7 @@ export default function SignUp() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 w-full h-full items-center"
           >
-            <div className="space-y-4 pr-2 max-h-[60dvh] max-md:min-h-[50dvh] overflow-auto w-full custom-scrollbar">
+            <div className="space-y-4 pr-2 max-h-[60dvh] max-md:min-h-[60dvh] overflow-auto w-full custom-scrollbar">
               <Input
                 id="name"
                 label="Nama"
