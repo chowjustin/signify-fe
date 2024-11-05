@@ -26,7 +26,7 @@ export default function useLoginMutation() {
       const token = res.data.token;
       setToken(token);
 
-      const user = await api.get<ApiResponse<User>>("/users/me");
+      const user = await api.get<ApiResponse<User>>("/users/me/");
       if (user) login({ ...user.data.data, token: token });
 
       return res;
