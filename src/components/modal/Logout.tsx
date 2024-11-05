@@ -33,7 +33,7 @@ export function LogOut({
         onOpenChange={onOpenChange}
         backdrop="opaque"
         backdropClassName="bg-[#17171F] bg-opacity-60"
-        className="w-[90%] md:w-[400px] flex mx-auto border-none"
+        className="w-[90%] md:w-[400px] flex mx-auto border-none relative z-[100]"
       >
         <Modal.Header
           className="flex justify-center mt-10"

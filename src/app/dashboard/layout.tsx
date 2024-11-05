@@ -24,7 +24,7 @@ const NavbarLinks = [
   {
     title: "Tambah Ajuan",
     icon: FiFileText,
-    link: "/ajuan",
+    link: "/dashboard/tambah",
   },
   {
     title: "Dashboard",
@@ -35,10 +35,12 @@ const NavbarLinks = [
 
 const ChildrenLayout = ({ children }: ChildrenLayoutProps) => {
   return (
-    <div className="flex max-h-screen h-screen max-w-screen w-screen">
+    <div className="flex lg:max-h-screen lg:h-screen lg:max-w-screen lg:w-screen">
       <Sidebar topNav={NavbarLinks} />
-      <div className="hidden lg:flex flex-col max-h-screen h-full w-full">
-        <div className="max-h-screen h-nav overflow-y-auto">{children}</div>
+      <div className="max-md:pt-[48px] max-lg:pt-[72px] lg:flex lg:flex-col lg:max-h-screen h-full w-full">
+        <div className="lg:max-h-screen lg:h-nav lg:overflow-y-auto">
+          {children}
+        </div>
       </div>
     </div>
   );

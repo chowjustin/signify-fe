@@ -15,6 +15,14 @@
       "**/pnpm-lock.yaml"
     ]
   },
+  "files": {
+    "ignore": [
+      "**/.next",
+      "**/node_modules",
+      "**/package.json",
+      "**/pnpm-lock.yaml"
+    ]
+  },
   "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
