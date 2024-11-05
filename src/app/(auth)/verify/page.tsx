@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import Button from "@/components/buttons/Button";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
@@ -38,6 +40,12 @@ function Verify() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const username = searchParams.get("username") || "";
+
+  React.useEffect(() => {
+    if (!username) {
+      router.replace("/signin");
+    }
+  }, [username, router]);
 
   const { handleSubmit, control, setValue, watch } = methods;
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);

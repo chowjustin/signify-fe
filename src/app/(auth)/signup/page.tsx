@@ -78,7 +78,7 @@ export default function SignUp() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 w-full h-full items-center"
           >
-            <div className="space-y-4 pr-2 max-h-[60dvh] overflow-auto w-full custom-scrollbar scrollbar-hidden">
+            <div className="space-y-4 pr-2 max-h-[60dvh] max-md:min-h-[50dvh] overflow-auto w-full custom-scrollbar">
               <Input
                 id="name"
                 label="Nama"
