@@ -144,7 +144,7 @@ function Verify() {
                     <input
                       {...field}
                       ref={(el) => setInputRef(index, el)}
-                      type="text"
+                      type="number"
                       maxLength={1}
                       className="w-12 h-12 max-sm:w-8 max-sm:h-8 border border-gray-300 rounded-md text-center text-xl focus:ring-2 focus:ring-primary focus:outline-none"
                       onChange={(e) => handleInput(index, e)}
@@ -157,6 +157,7 @@ function Verify() {
             <Button
               variant="primary"
               size="lg"
+              type="submit"
               className="w-full mt-5"
               onClick={handleSubmit(onSubmit)}
               isLoading={isPending}
