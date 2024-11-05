@@ -69,6 +69,7 @@ function SignIn() {
               variant="primary"
               size="lg"
               className="w-full"
+              type="submit"
               onClick={handleSubmit(onSubmit)}
               isLoading={isPending}
             >

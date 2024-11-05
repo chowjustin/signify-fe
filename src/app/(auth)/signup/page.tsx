@@ -53,18 +53,18 @@ export default function SignUp() {
   };
 
   return (
-    <section className="p-6 max-md:p-2 w-full h-full">
-      <div className="max-h-[45vh] rounded-[15px] overflow-hidden">
+    <section className="p-6 max-md:p-2 w-full relative flex items-center justify-center h-screen">
+      <div className="absolute p-6 max-md:p-2 -z-10 top-0">
         <NextImage
           src="/signup/bg.png"
           width={2000}
           height={2000}
           alt="background"
-          className="w-full h-fit"
+          className="w-full h-fit rounded-[15px] max-h-[45dvh] overflow-hidden"
           imgClassName="w-full h-full"
         />
       </div>
-      <div className="bg-white shadow-md h-fit absolute z-10 top-1/2 max-h-[85vh] custom-scrollbar -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-[15px] max-md:px-6 max-md:py-8 px-[50px] py-12 w-full xl:max-w-[30%] md:max-w-[60%] max-w-[75%]">
+      <div className="bg-white shadow-md h-fit absolute z-10 max-h-[85dvh] custom-scrollbar rounded-[15px] max-md:px-6 max-md:py-8 px-[50px] py-12 w-full xl:max-w-[30%] md:max-w-[60%] max-w-[75%]">
         <FormProvider {...methods}>
           <Typography
             as="h2"
@@ -78,7 +78,7 @@ export default function SignUp() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4 w-full h-full items-center"
           >
-            <div className="space-y-4 pr-2 max-h-[60vh] overflow-auto w-full custom-scrollbar scrollbar-hidden">
+            <div className="space-y-4 pr-2 max-h-[60dvh] overflow-auto w-full custom-scrollbar scrollbar-hidden">
               <Input
                 id="name"
                 label="Nama"
@@ -127,6 +127,7 @@ export default function SignUp() {
             <div className="w-full h-full flex flex-col items-center gap-3 max-md:gap-1">
               <Button
                 variant="primary"
+                type="submit"
                 onClick={handleSubmit(onSubmit)}
                 size="lg"
                 className="w-full"
