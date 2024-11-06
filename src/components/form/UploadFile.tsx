@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Accept, FileRejection, useDropzone } from "react-dropzone";
 import {
@@ -28,7 +30,7 @@ export type DropzoneInputProps = {
   className?: string;
 };
 
-export default function UploadImage({
+export default function UploadFile({
   id,
   label,
   helperText,
@@ -111,11 +113,13 @@ export default function UploadImage({
     <div className="w-full space-y-1.5 rounded-md">
       {label && (
         <label htmlFor={id} className="flex space-x-1">
-          <Typography weight="bold" className="text-sm text-typo-main">
+          <Typography variant="sm" className="text-sm text-gray-900">
             {label}
           </Typography>
           {validation?.required && (
-            <Typography className="font-bold text-danger-main">*</Typography>
+            <Typography variant="sm" className="text-sm text-red-500">
+              *
+            </Typography>
           )}
         </label>
       )}
@@ -152,20 +156,20 @@ export default function UploadImage({
               >
                 <div className="flex flex-row items-center gap-[6px]">
                   <Typography
-                    variant="p"
-                    className="text-center text-xl text-typo-secondary"
+                    variant="sm"
+                    className="text-center text-sm text-typo-secondary"
                   >
                     <HiOutlineArrowUpCircle />
                   </Typography>
                   <Typography
-                    variant="p"
+                    variant="sm"
                     className="text-center text-typo-secondary"
                   >
                     Drag and drop file
                   </Typography>
                 </div>
                 <Typography
-                  variant="p"
+                  variant="sm"
                   className="text-center text-typo-secondary"
                 >
                   Or
@@ -179,11 +183,11 @@ export default function UploadImage({
                   </Typography>
                 </div>
                 <Typography
-                  variant="p"
-                  className="text-center text-typo-secondary"
+                  variant="sm"
+                  className="text-center text-sm text-typo-secondary"
                 >
-                  Files allowed: {accept["image/*"].join(", ")} up to{" "}
-                  {maxSize / 1000000} MB
+                  Files allowed: .jpg .jpeg .png .pdf up to {maxSize / 1000000}{" "}
+                  MB
                 </Typography>
               </div>
             </div>

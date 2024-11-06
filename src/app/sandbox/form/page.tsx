@@ -2,32 +2,27 @@
 
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-import Input from "@/components/form/Input";
-import UploadImage from "@/components/form/UploadImage";
+import UploadFile from "@/components/form/UploadFile";
 import Button from "@/components/buttons/Button";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { ApiError, ApiResponse } from "@/types/api";
+import { ApiError } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
-import useAuthStore from "@/app/stores/useAuthStore";
+import { Input } from "@nextui-org/react";
 
 export default function FormSandbox() {
   const methods = useForm();
 
   const { handleSubmit } = methods;
 
-  const { user } = useAuthStore();
-
-  const { mutate: handleImageUpload, isPending } = useMutation<
+  const { mutate: handleImageUpload } = useMutation<
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     any,
     ApiError,
     FormData
   >({
     mutationFn: async (data) => {
-      await axios;
-      api
+      await api
         .post("/users/file", data, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -45,17 +40,13 @@ export default function FormSandbox() {
   });
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const onSubmit: SubmitHandler<any> = (data) => {
-    // Prepare the FormData object
     const formData = new FormData();
 
-    // Append the image file from react-hook-form
     if (data.image && data.image[0]) {
-      formData.append("file", data.image[0]); // data.image[0] is the uploaded image file
+      formData.append("file", data.image[0]);
     }
 
-    // Trigger the mutation to upload the image
     handleImageUpload(formData);
-    // console.log(data);
   };
 
   return (
@@ -66,19 +57,19 @@ export default function FormSandbox() {
             className="w-[600px] flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
           >
-            {/* <Input id="Test" label="Username Tujuan" placeholder="Username" />
+            <Input id="Test" label="Username Tujuan" placeholder="Username" />
             <Input
               id="Test"
               label="Username Tujuan"
               placeholder="Username"
               readOnly
-            /> */}
+            />
             <div>
-              <UploadImage
-                label="Upload Image"
+              <UploadFile
+                label="Upload File"
                 id="image"
                 maxSize={2000000}
-                helperText="Format file .jpeg .jpg .png, maksimum 2 MB"
+                helperText="Format file .jpeg .jpg .png .pdf, maksimum 2 MB"
                 validation={{ required: "This field is required" }}
               />
             </div>
