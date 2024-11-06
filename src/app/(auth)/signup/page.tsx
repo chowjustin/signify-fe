@@ -2,6 +2,7 @@
 
 import Button from "@/components/buttons/Button";
 import Input from "@/components/form/Input";
+import UploadFile from "@/components/form/UploadFile";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
 import api from "@/lib/api";
@@ -18,7 +19,7 @@ type SignUpRequest = {
   username: string;
   email: string;
   password: string;
-  ttd: string;
+  ttd: File | null;
 };
 
 export default function SignUp() {
@@ -35,7 +36,30 @@ export default function SignUp() {
     SignUpRequest
   >({
     mutationFn: async (data: SignUpRequest) => {
-      return await api.post("/users/signup", data);
+      // return await api.post("/users/signup", data);
+      //   return await api.post("/users/signup", data, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   });
+      // },
+      const formData = new FormData();
+
+      // Append form fields to the FormData
+      formData.append("name", data.name);
+      formData.append("username", data.username);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+
+      if (data.ttd) {
+        formData.append("ttd", data.ttd);
+      }
+
+      return await api.post("/users/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
     onSuccess: (_, variables) => {
       const { username } = variables;
@@ -116,13 +140,15 @@ export default function SignUp() {
                   },
                 }}
               />
-              <Input
-                id="ttd"
-                label="Upload Tanda Tangan (.png)"
-                placeholder="Tanda Tangan"
-                className="h-[250px]"
-                validation={{ required: "Tanda tangan harus diisi" }}
-              />
+              <div>
+                <UploadFile
+                  label="Upload File"
+                  id="image"
+                  maxSize={2000000}
+                  helperText="Format file .jpeg .jpg .png .pdf, maksimum 2 MB"
+                  validation={{ required: "This field is required" }}
+                />
+              </div>
             </div>
             <div className="w-full h-full flex flex-col items-center gap-3 max-md:gap-1">
               <Button
