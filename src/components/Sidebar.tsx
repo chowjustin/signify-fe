@@ -46,7 +46,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
   return (
     <>
       <div
-        className={`transition-all max-lg:hidden duration-300 ${
+        className={`transition-all max-lg:hidden duration-300 z-50 ${
           isOpen ? "w-full lg:w-[22rem]" : "w-full lg:w-[7rem]"
         } h-screen lg:py-8 bg-[#F8F9FA] lg:drop-shadow-2xl`}
       >

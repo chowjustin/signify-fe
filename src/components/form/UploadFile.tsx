@@ -174,21 +174,14 @@ export default function UploadFile({
                 >
                   Or
                 </Typography>
-                <div className="rounded-xl border border-primary-info-dark px-4 py-3">
+                <div className="rounded-xl border border-primary px-4 py-3">
                   <Typography
                     variant="sm"
-                    className="text-center font-semibold text-typo-outline-1"
+                    className="text-center font-semibold text-primary"
                   >
                     Upload from Computer
                   </Typography>
                 </div>
-                <Typography
-                  variant="sm"
-                  className="text-center text-sm text-typo-secondary"
-                >
-                  Files allowed: .jpg .jpeg .png .pdf up to {maxSize / 1000000}{" "}
-                  MB
-                </Typography>
               </div>
             </div>
           )}

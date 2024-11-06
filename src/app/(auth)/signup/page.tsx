@@ -19,7 +19,8 @@ type SignUpRequest = {
   username: string;
   email: string;
   password: string;
-  ttd: File | null;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  file: any;
 };
 
 export default function SignUp() {
@@ -36,23 +37,15 @@ export default function SignUp() {
     SignUpRequest
   >({
     mutationFn: async (data: SignUpRequest) => {
-      // return await api.post("/users/signup", data);
-      //   return await api.post("/users/signup", data, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   });
-      // },
       const formData = new FormData();
 
-      // Append form fields to the FormData
       formData.append("name", data.name);
       formData.append("username", data.username);
       formData.append("email", data.email);
       formData.append("password", data.password);
 
-      if (data.ttd) {
-        formData.append("ttd", data.ttd);
+      if (data.file && data.file[0]) {
+        formData.append("file", data.file[0]);
       }
 
       return await api.post("/users/signup", formData, {
@@ -143,7 +136,7 @@ export default function SignUp() {
               <div>
                 <UploadFile
                   label="Upload File"
-                  id="image"
+                  id="file"
                   maxSize={2000000}
                   helperText="Format file .jpeg .jpg .png .pdf, maksimum 2 MB"
                   validation={{ required: "This field is required" }}

@@ -94,7 +94,7 @@ function Profile() {
             Preview TTD
           </Typography>
           <NextImage
-            src="/Signify Logo.png"
+            src={user?.ttd || "/Signify Logo.png"}
             width={500}
             height={500}
             alt="TTD Preview"
