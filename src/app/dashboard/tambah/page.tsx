@@ -13,7 +13,6 @@ import { useMutation } from "@tanstack/react-query";
 import { ApiError } from "@/types/api";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
-import Typography from "@/components/Typography";
 import Input from "@/components/form/Input";
 import UploadFile from "@/components/form/UploadFile";
 import Button from "@/components/buttons/Button";
@@ -27,11 +26,12 @@ import { RenderPageProps } from "@react-pdf-viewer/core";
 import { useState } from "react";
 
 type SignUpRequest = {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  file: FileList | null;
+  recipient: string;
+  topic: string;
+  cover_letter: string;
+  x: string;
+  y: string;
+  document: FileList | null;
 };
 
 const breadCrumbs = [
@@ -45,8 +45,7 @@ export default function TambahAjuan() {
   const { handleSubmit, control } = methods;
   const router = useRouter();
 
-  // Watch for file upload changes
-  const file = useWatch({ control, name: "file" });
+  const file = useWatch({ control, name: "document" });
 
   const [coordinates, setCoordinates] = useState<{
     x: number;
@@ -90,21 +89,26 @@ export default function TambahAjuan() {
   >({
     mutationFn: async (data: SignUpRequest) => {
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("username", data.username);
-      formData.append("email", data.email);
-      formData.append("password", data.password);
+      formData.append("recipient", data.recipient);
+      formData.append("topic", data.topic);
+      formData.append("cover_letter", data.cover_letter);
 
-      if (data.file && data.file[0]) {
-        formData.append("file", data.file[0]);
+      if (coordinates?.x !== undefined && coordinates?.y !== undefined) {
+        formData.append("x", coordinates.x.toFixed(0));
+        formData.append("y", coordinates.y.toFixed(0));
       }
 
-      return await api.post("/users/signup", formData, {
+      if (data.document && data.document[0]) {
+        formData.append("document", data.document[0]);
+      }
+
+      return await api.post("/sign/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
     },
     onSuccess: () => {
       toast.success("Berhasil melakukan registrasi!");
+      router.replace("/dashboard");
     },
     onError: (err) => {
       toast.error(err.message);
@@ -112,6 +116,14 @@ export default function TambahAjuan() {
   });
 
   const onSubmit: SubmitHandler<SignUpRequest> = (data) => {
+    if (!coordinates) {
+      toast.error("Please select coordinates on the preview");
+      return;
+    }
+
+    data.x = coordinates.x.toFixed(0);
+    data.y = coordinates.y.toFixed(0);
+
     SignUpMutation(data);
   };
 
@@ -135,8 +147,8 @@ export default function TambahAjuan() {
           </span>
         </div>
       </div>
-      <div className="flex justify-between gap-6">
-        <div className="w-[40%]">
+      <div className="flex justify-between gap-6 max-md:flex-col">
+        <div className="w-[40%] max-md:w-full">
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -145,12 +157,12 @@ export default function TambahAjuan() {
               <LabelText required>Masukkan Username Tujuan</LabelText>
               <div className="space-y-4">
                 <SelectableInput
-                  id="username"
+                  id="recipient"
                   title="Username"
                   errorMessage="Username Tujuan harus diisi"
                 />
                 <Input
-                  id="title"
+                  id="topic"
                   label="Topik"
                   placeholder="Topik Surat"
                   validation={{ required: "Topik surat harus diisi" }}
@@ -158,27 +170,48 @@ export default function TambahAjuan() {
                 <div>
                   <UploadFile
                     label="Upload Surat"
-                    id="file"
+                    id="document"
                     maxSize={2000000}
                     helperText="Format file .pdf, maksimum 2 MB"
                     validation={{ required: "File surat wajib diupload" }}
                   />
                 </div>
+                <LabelText labelTextClasname="mt-4">
+                  Select Coordinates{" "}
+                  <span className="max-md:hidden">on the Preview</span>
+                </LabelText>
+                <div className="w-full md:hidden h-[45dvh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+                  {fileUrl ? (
+                    <Worker
+                      workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
+                    >
+                      <Viewer
+                        fileUrl={fileUrl}
+                        defaultScale={SpecialZoomLevel.PageFit}
+                        renderPage={renderPage}
+                      />
+                    </Worker>
+                  ) : (
+                    <p className="text-center text-gray-500">
+                      File not uploaded
+                    </p>
+                  )}
+                </div>
+                {coordinates && (
+                  <div className="mt-4 text-gray-700">
+                    <LabelText>
+                      Selected Coordinates: X: {coordinates.x.toFixed(2)}, Y:{" "}
+                      {coordinates.y.toFixed(2)}
+                    </LabelText>
+                  </div>
+                )}
                 <TextArea
-                  id="coverletter"
+                  id="cover_letter"
                   label="Cover Letter"
                   placeholder="Cover Letter"
                   className="min-h-[200px]"
                 />
               </div>
-              {coordinates && (
-                <div className="mt-4 text-gray-700">
-                  <LabelText>
-                    Selected Coordinates: X: {coordinates.x.toFixed(2)}, Y:{" "}
-                    {coordinates.y.toFixed(2)}
-                  </LabelText>
-                </div>
-              )}
 
               <div className="mt-4 w-full flex justify-center overflow-y-auto">
                 <Button
@@ -196,7 +229,7 @@ export default function TambahAjuan() {
           </FormProvider>
         </div>
         {/* File Preview */}
-        <div className="w-[50%] bg-gray-100 h-[80dvh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+        <div className="w-[50%] max-md:hidden max-md:h-full bg-gray-100 h-[80dvh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
           {fileUrl ? (
             <Worker
               workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}

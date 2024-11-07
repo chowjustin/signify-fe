@@ -113,7 +113,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
 
           <div className="">
             <Link
-              href={"/settings"}
+              href={"/dashboard/settings"}
               className={`flex flex-row items-center space-x-5 my-6 hover:text-hover ${
                 isOpen ? "px-12" : ""
               }`}
@@ -201,6 +201,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
                           ? "bg-[#4FD1C5] text-white font-bold"
                           : "hover:bg-gray-100 bg-white shadow-sm"
                       } `}
+                      onClick={() => setIsSheetOpen(false)}
                     >
                       <link.icon
                         className={`text-2xl items-center ${
@@ -212,8 +213,9 @@ export default function Sidebar({ topNav }: SidenavProps) {
                   ))}
                   <div className="px-2 absolute bottom-0">
                     <Link
-                      href={"/settings"}
+                      href={"/dashboard/settings"}
                       className={`flex flex-row items-center space-x-5 my-6 hover:text-hover px-12}`}
+                      onClick={() => setIsSheetOpen(false)}
                     >
                       <FiSettings className={`text-2xl mx-auto`} />
                       <p className={`text-S1`}>Pengaturan</p>

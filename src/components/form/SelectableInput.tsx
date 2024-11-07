@@ -71,7 +71,7 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
         {/* Search Input Button */}
         <div
           className={cn(
-            "w-full mt-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-[15px]",
+            "w-full mt-2 inline-flex items-center gap-x-2 text-sm rounded-[15px]",
             "h-full w-full rounded-[15px] border border-[#E2E8F0] px-[20px] py-[13px] caret-[#4FD1C5]",
             "focus:outline-1 focus:outline-[#4FD1C5] focus:ring-inset",
             "text-sm focus:bg-slate-50",
@@ -88,7 +88,13 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
             placeholder={selectedSize || title}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full outline-none bg-transparent text-gray-800 placeholder-neutral-600"
+            className={cn(
+              "w-full outline-none bg-transparent",
+              "text-sm focus:bg-slate-50",
+              "hover:ring-1 hover:ring-inset hover:ring-[#4FD1C5]",
+              "placeholder:text-sm placeholder:text-gray-500",
+              "text-gray-900",
+            )}
             aria-label="Dropdown Search"
           />
         </div>
@@ -132,7 +138,9 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
         value={selectedSize || ""}
       />
 
-      {errors[id] && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      {errors[id] && (
+        <ErrorMessage className="-mt-4">{errorMessage}</ErrorMessage>
+      )}
     </>
   );
 };
