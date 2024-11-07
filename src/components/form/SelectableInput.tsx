@@ -69,31 +69,23 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
     <>
       <div className="relative w-full min-w-[9rem]" ref={dropdownRef}>
         {/* Search Input Button */}
-        <div
-          className={cn(
-            "w-full mt-2 inline-flex items-center gap-x-2 text-sm rounded-[15px]",
-            "h-full w-full rounded-[15px] border border-[#E2E8F0] px-[20px] py-[13px] caret-[#4FD1C5]",
-            "focus:outline-1 focus:outline-[#4FD1C5] focus:ring-inset",
-            "text-sm focus:bg-slate-50",
-            "hover:ring-1 hover:ring-inset hover:ring-[#4FD1C5]",
-            "placeholder:text-sm placeholder:text-gray-500",
-            "text-gray-900",
-            errors[id] &&
-              "border-none ring-2 ring-inset ring-red-500 placeholder:text-gray-500 focus:ring-red-500 mb-2",
-            `${className}`,
-          )}
-        >
+        <div className="">
           <input
             type="text"
             placeholder={selectedSize || title}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={cn(
-              "w-full outline-none bg-transparent",
+              "w-full mt-2 inline-flex items-center gap-x-2 text-sm rounded-[15px]",
+              "h-full w-full rounded-[15px] border border-[#E2E8F0] px-[20px] py-[15px] caret-[#4FD1C5]",
+              "focus:outline-1 focus:outline-[#4FD1C5] focus:ring-inset",
               "text-sm focus:bg-slate-50",
               "hover:ring-1 hover:ring-inset hover:ring-[#4FD1C5]",
               "placeholder:text-sm placeholder:text-gray-500",
               "text-gray-900",
+              errors[id] &&
+                "border-none ring-2 ring-inset ring-red-500 placeholder:text-gray-500 focus:ring-red-500 mb-2",
+              `${className}`,
             )}
             aria-label="Dropdown Search"
           />

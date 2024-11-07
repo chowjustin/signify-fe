@@ -107,7 +107,7 @@ export default function TambahAjuan() {
       });
     },
     onSuccess: () => {
-      toast.success("Berhasil melakukan registrasi!");
+      toast.success("Berhasil menambah ajuan!");
       router.replace("/dashboard");
     },
     onError: (err) => {
