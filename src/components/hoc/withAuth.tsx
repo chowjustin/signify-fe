@@ -80,7 +80,7 @@ export default function withAuth<T>(
       if (!user) {
         const loadUser = async () => {
           try {
-            const res = await api.get<ApiResponse<User>>("/users/");
+            const res = await api.get<ApiResponse<User>>("/users/me");
 
             if (!res.data.data) {
               toast.error("Sesi login tidak valid");
