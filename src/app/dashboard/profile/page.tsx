@@ -93,12 +93,11 @@ function Profile() {
           <Typography className="text-[#718096]" weight="bold">
             Preview TTD
           </Typography>
-          <NextImage
-            src={user?.ttd || "/Signify Logo.png"}
-            width={500}
-            height={500}
+
+          <img
+            src={user?.ttd}
             alt="TTD Preview"
-            className="w-[100px] object-contain md:w-[160px] mt-2 rounded-lg overflow-hidden border-2 border-[#718096] p-2"
+            className="w-fit object-contain mt-2 rounded-lg overflow-hidden border-2 border-[#718096] p-2"
           />
         </div>
       </div>
