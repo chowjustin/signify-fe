@@ -138,7 +138,7 @@ export default function SignUp() {
                   label="Upload File"
                   id="file"
                   maxSize={2000000}
-                  helperText="Format file .jpeg .jpg .png .pdf, maksimum 2 MB"
+                  helperText="Format file .jpeg .jpg .png, maksimum 2 MB"
                   validation={{ required: "This field is required" }}
                 />
               </div>

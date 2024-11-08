@@ -37,13 +37,12 @@ export default function useLoginMutation() {
     },
     onError: (error, data) => {
       if (error.response?.data.message === "User not verified") {
+        toast.error("User belum verified!");
         const username = data.username;
         router.replace(`/verify?username=${encodeURIComponent(username)}`);
+      } else {
+        toast.error("Username atau password salah!");
       }
-      toast.error(
-        error.response?.data.message ||
-          "Email atau kata sandi salah, silahkan coba lagi",
-      );
     },
   });
   return { mutate, isPending };

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
-
+import * as React from "react";
 import ButtonLink from "@/components/links/ButtonLink";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
@@ -27,6 +27,8 @@ const dataNavbar = [
 ];
 
 export default function Navbar() {
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
   const handleClick = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -91,7 +93,7 @@ export default function Navbar() {
 
           {/* Mobile Navbar */}
           <div className="relative mt-1 lg:hidden">
-            <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger className="mr-6 h-full">
                 <GiHamburgerMenu className="min-h-[3rem] min-w-[3rem] p-4 text-black" />
               </SheetTrigger>
@@ -105,7 +107,10 @@ export default function Navbar() {
                       //   className="px-6"
                       // >
                       <div
-                        onClick={() => handleClick(item.href)}
+                        onClick={() => {
+                          setIsSheetOpen(false);
+                          handleClick(item.href);
+                        }}
                         key={index}
                         className="cursor-pointer"
                       >

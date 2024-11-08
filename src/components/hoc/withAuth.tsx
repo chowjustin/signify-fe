@@ -105,7 +105,6 @@ export default function withAuth<T>(
 
     React.useEffect(() => {
       checkAuth();
-
       window.addEventListener("focus", checkAuth);
       return () => {
         window.removeEventListener("focus", checkAuth);
