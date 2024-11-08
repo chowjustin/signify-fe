@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import { SubmitModal } from "@/components/modal/variants/submitModal";
+import { removeToken } from "@/lib/cookies";
 
 type ModalReturnType = {
   openModal: () => void;
@@ -131,7 +132,7 @@ export function EditEmailModal({
               message="Email berhasil diupdate!"
               path="/dashboard/profile"
               onSubmit={handleSubmit(onSubmit)}
-              onReset={reset}
+              onReset={removeToken}
               response={response}
             >
               {({ openModal }) => (
