@@ -23,7 +23,7 @@ import TextArea from "@/components/form/TextArea";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
 import { RenderPageProps } from "@react-pdf-viewer/core";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SignUpRequest = {
   recipient: string;
@@ -41,53 +41,131 @@ const breadCrumbs = [
 
 export default function TambahAjuan() {
   const methods = useForm<SignUpRequest>({ mode: "onChange" });
-
   const { handleSubmit, control } = methods;
   const router = useRouter();
 
   const file = useWatch({ control, name: "document" });
-
-  const [coordinates, setCoordinates] = useState<{
+  const [selection, setSelection] = useState<{
     x: number;
     y: number;
+    w: number;
+    height: number;
   } | null>(null);
+  const [startPoint, setStartPoint] = useState<{ x: number; y: number } | null>(
+    null,
+  );
+  const [isMdScreen, setIsMdScreen] = useState(false);
+  const animationFrameId = useRef<number | null>(null);
 
-  const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
-    if (page instanceof HTMLElement) {
-      const rect = page.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMdScreen(window.innerWidth >= 768);
+    };
 
-      const scaleX = 595 / rect.width;
-      const scaleY = 842 / rect.height;
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
-      const scaledX = x * scaleX;
-      const scaledY = y * scaleY;
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-      setCoordinates({ x: scaledX, y: scaledY });
+  const handleMouseDown = (e: React.MouseEvent, page: HTMLElement) => {
+    const rect = page.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const scaleX = 595 / rect.width;
+    const scaleY = 842 / rect.height;
+
+    setStartPoint({ x: x * scaleX, y: y * scaleY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent, page: HTMLElement) => {
+    if (startPoint) {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+
+      animationFrameId.current = requestAnimationFrame(() => {
+        const rect = page.getBoundingClientRect();
+        const currentX = e.clientX - rect.left;
+        const currentY = e.clientY - rect.top;
+
+        const scaleX = 595 / rect.width;
+        const scaleY = 842 / rect.height;
+
+        const w = (currentX - startPoint.x / scaleX) * scaleX;
+        const height = (currentY - startPoint.y / scaleY) * scaleY;
+
+        setSelection({
+          x: startPoint.x,
+          y: startPoint.y,
+          w,
+          height,
+        });
+      });
     }
   };
 
-  const renderPage = (props: RenderPageProps) => {
-    return (
-      <div
-        style={{
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "100%",
-          overflow: "hidden",
-          cursor: "crosshair",
-          zIndex: 100,
-        }}
-        onClick={(e) => handlePageClick(e, e.currentTarget)}
-      >
-        {props.canvasLayer.children}
-      </div>
-    );
+  const handleMouseUp = () => {
+    setStartPoint(null);
+    if (animationFrameId.current) {
+      cancelAnimationFrame(animationFrameId.current);
+      animationFrameId.current = null;
+    }
   };
+
+  const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
+    const rect = page.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const scaleX = 595 / rect.width;
+    const scaleY = 842 / rect.height;
+
+    setSelection({ x: x * scaleX, y: y * scaleY, w: 0, height: 0 });
+  };
+
+  const renderPage = (props: RenderPageProps) => (
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        cursor: "crosshair",
+        zIndex: 100,
+      }}
+      onMouseDown={
+        isMdScreen ? (e) => handleMouseDown(e, e.currentTarget) : undefined
+      }
+      onMouseMove={
+        isMdScreen ? (e) => handleMouseMove(e, e.currentTarget) : undefined
+      }
+      onMouseUp={isMdScreen ? handleMouseUp : undefined}
+      onClick={
+        !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
+      }
+    >
+      {props.canvasLayer.children}
+      {isMdScreen && selection && (
+        <div
+          style={{
+            position: "absolute",
+            left: selection.x,
+            top: selection.y,
+            width: selection.w,
+            height: selection.height,
+            border: "2px dashed blue",
+            backgroundColor: "rgba(0, 0, 255, 0.1)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+    </div>
+  );
 
   const { mutate: SignUpMutation, isPending } = useMutation<
     AxiosResponse,
@@ -100,9 +178,14 @@ export default function TambahAjuan() {
       formData.append("topic", data.topic);
       formData.append("cover_letter", data.cover_letter);
 
-      if (coordinates?.x !== undefined && coordinates?.y !== undefined) {
-        formData.append("x", coordinates.x.toFixed(0));
-        formData.append("y", coordinates.y.toFixed(0));
+      if (
+        selection?.x !== undefined &&
+        selection?.y !== undefined &&
+        selection?.w !== undefined
+      ) {
+        formData.append("x", selection.x.toFixed(0));
+        formData.append("y", selection.y.toFixed(0));
+        formData.append("w", selection.w.toFixed(0));
       }
 
       if (data.document && data.document[0]) {
@@ -123,13 +206,13 @@ export default function TambahAjuan() {
   });
 
   const onSubmit: SubmitHandler<SignUpRequest> = (data) => {
-    if (!coordinates) {
+    if (!selection) {
       toast.error("Please select coordinates on the preview");
       return;
     }
 
-    data.x = coordinates.x.toFixed(0);
-    data.y = coordinates.y.toFixed(0);
+    data.x = selection.x.toFixed(0);
+    data.y = selection.y.toFixed(0);
 
     SignUpMutation(data);
   };
@@ -204,14 +287,15 @@ export default function TambahAjuan() {
                     </p>
                   )}
                 </div>
-                {coordinates && (
-                  <div className="mt-4 text-gray-700">
-                    <LabelText>
-                      Selected Coordinates: X: {coordinates.x.toFixed(2)}, Y:{" "}
-                      {coordinates.y.toFixed(2)}
-                    </LabelText>
-                  </div>
-                )}
+
+                <div className="mt-4 text-gray-700">
+                  <LabelText>
+                    Selected Coordinates: X: {selection?.x.toFixed(2)}, Y:{" "}
+                    {selection?.y.toFixed(2)},{" "}
+                    {isMdScreen && <>Width: {selection?.w.toFixed(2)}</>}
+                  </LabelText>
+                </div>
+
                 <TextArea
                   id="cover_letter"
                   label="Cover Letter"

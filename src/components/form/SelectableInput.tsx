@@ -101,7 +101,7 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
             {filteredData.map((username: string, id: number) => (
               <p
                 key={id}
-                className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-900 focus:text-gray-900 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
                 onClick={() => {
                   setSelectedSize(username);
                   setSearchTerm("");
