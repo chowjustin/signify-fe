@@ -57,7 +57,14 @@ export default function TambahAjuan() {
       const rect = page.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      setCoordinates({ x, y });
+
+      const scaleX = 595 / rect.width;
+      const scaleY = 842 / rect.height;
+
+      const scaledX = x * scaleX;
+      const scaledY = y * scaleY;
+
+      setCoordinates({ x: scaledX, y: scaledY });
     }
   };
 
