@@ -1,21 +1,18 @@
 "use client";
 
-import useAuthStore from "@/app/stores/useAuthStore";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import NextImage from "@/components/NextImage";
 import Typography from "@/components/Typography";
 import withAuth from "@/components/hoc/withAuth";
-import { user } from "@nextui-org/theme";
 import { FaPenToSquare } from "react-icons/fa6";
-import Button from "@/components/buttons/Button";
 
 const breadCrumbs = [
   { href: "/dashboard", Title: "Dashboard" },
   { href: "/dashboard/settings", Title: "Settings" },
 ];
 
-// export default withAuth(Settings, "user");
-export default function Settings() {
+export default withAuth(Settings, "user");
+function Settings() {
   return (
     <section className="p-6">
       <div className="relative w-full h-full rounded-[15px] min-h-[64px] overflow-hidden">
