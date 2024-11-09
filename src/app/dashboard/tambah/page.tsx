@@ -208,7 +208,6 @@ export default function TambahAjuan() {
     const scaledX = selection.x * scaleX;
     const scaledY = selection.y * scaleY;
     const scaledW = selection.w * scaleX;
-    const scaledHeight = selection.height * scaleY;
 
     const formData = new FormData();
     formData.append("recipient", data.recipient);
@@ -218,7 +217,6 @@ export default function TambahAjuan() {
     formData.append("x", scaledX.toFixed(0));
     formData.append("y", scaledY.toFixed(0));
     formData.append("w", scaledW.toFixed(0));
-    formData.append("height", scaledHeight.toFixed(0));
 
     if (data.document && data.document[0]) {
       formData.append("document", data.document[0]);
