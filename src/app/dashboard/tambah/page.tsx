@@ -10,7 +10,6 @@ import SelectableInput from "@/components/form/SelectableInput";
 import { useRouter } from "next/navigation";
 import { AxiosError, AxiosResponse } from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { ApiError } from "@/types/api";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import Input from "@/components/form/Input";
@@ -22,7 +21,6 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 import TextArea from "@/components/form/TextArea";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
-import { RenderPageProps } from "@react-pdf-viewer/core";
 import { useEffect, useRef, useState } from "react";
 
 type SignUpRequest = {
@@ -73,10 +71,7 @@ export default function TambahAjuan() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const scaleX = 595 / rect.width;
-    const scaleY = 842 / rect.height;
-
-    setStartPoint({ x: x * scaleX, y: y * scaleY });
+    setStartPoint({ x, y });
   };
 
   const handleMouseMove = (e: React.MouseEvent, page: HTMLElement) => {
@@ -90,11 +85,8 @@ export default function TambahAjuan() {
         const currentX = e.clientX - rect.left;
         const currentY = e.clientY - rect.top;
 
-        const scaleX = 595 / rect.width;
-        const scaleY = 842 / rect.height;
-
-        const w = (currentX - startPoint.x / scaleX) * scaleX;
-        const height = (currentY - startPoint.y / scaleY) * scaleY;
+        const w = currentX - startPoint.x;
+        const height = currentY - startPoint.y;
 
         setSelection({
           x: startPoint.x,
@@ -119,14 +111,13 @@ export default function TambahAjuan() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const scaleX = 595 / rect.width;
-    const scaleY = 842 / rect.height;
-
-    setSelection({ x: x * scaleX, y: y * scaleY, w: 0, height: 0 });
+    setSelection({ x, y, w: 0, height: 0 });
   };
 
-  const renderPage = (props: RenderPageProps) => (
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const renderPage = (props: any) => (
     <div
+      id="preview-page"
       style={{
         position: "relative",
         display: "flex",
@@ -135,7 +126,7 @@ export default function TambahAjuan() {
         width: "100%",
         height: "100%",
         overflow: "hidden",
-        cursor: "crosshair",
+        cursor: isMdScreen ? "crosshair" : "default",
         zIndex: 100,
       }}
       onMouseDown={
@@ -164,34 +155,29 @@ export default function TambahAjuan() {
           }}
         />
       )}
+      {!isMdScreen && selection && (
+        <div
+          style={{
+            position: "absolute",
+            left: selection.x,
+            top: selection.y,
+            width: selection.w,
+            height: selection.height,
+            border: "2px dashed red",
+            backgroundColor: "rgba(255, 0, 0, 0.1)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
     </div>
   );
 
   const { mutate: SignUpMutation, isPending } = useMutation<
     AxiosResponse,
-    AxiosError<ApiError>,
-    SignUpRequest
+    AxiosError,
+    FormData
   >({
-    mutationFn: async (data: SignUpRequest) => {
-      const formData = new FormData();
-      formData.append("recipient", data.recipient);
-      formData.append("topic", data.topic);
-      formData.append("cover_letter", data.cover_letter);
-
-      if (
-        selection?.x !== undefined &&
-        selection?.y !== undefined &&
-        selection?.w !== undefined
-      ) {
-        formData.append("x", selection.x.toFixed(0));
-        formData.append("y", selection.y.toFixed(0));
-        formData.append("w", selection.w.toFixed(0));
-      }
-
-      if (data.document && data.document[0]) {
-        formData.append("document", data.document[0]);
-      }
-
+    mutationFn: async (formData: FormData) => {
       return await api.post("/sign/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -211,10 +197,34 @@ export default function TambahAjuan() {
       return;
     }
 
-    data.x = selection.x.toFixed(0);
-    data.y = selection.y.toFixed(0);
+    const page = document.getElementById("preview-page");
+    if (!page) return;
 
-    SignUpMutation(data);
+    const rect = page.getBoundingClientRect();
+
+    const scaleX = 595 / rect.width;
+    const scaleY = 842 / rect.height;
+
+    const scaledX = selection.x * scaleX;
+    const scaledY = selection.y * scaleY;
+    const scaledW = selection.w * scaleX;
+    const scaledHeight = selection.height * scaleY;
+
+    const formData = new FormData();
+    formData.append("recipient", data.recipient);
+    formData.append("topic", data.topic);
+    formData.append("cover_letter", data.cover_letter);
+
+    formData.append("x", scaledX.toFixed(0));
+    formData.append("y", scaledY.toFixed(0));
+    formData.append("w", scaledW.toFixed(0));
+    formData.append("height", scaledHeight.toFixed(0));
+
+    if (data.document && data.document[0]) {
+      formData.append("document", data.document[0]);
+    }
+
+    SignUpMutation(formData);
   };
 
   const fileUrl = file?.[0] ? URL.createObjectURL(file[0]) : null;

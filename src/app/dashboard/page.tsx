@@ -122,13 +122,22 @@ function Dashboard() {
     const minutes = String(dateObject.getMinutes()).padStart(2, "0");
     const time = `${hours}:${minutes}`;
 
+    const today = new Date();
+    const isToday =
+      dateObject.getDate() === today.getDate() &&
+      dateObject.getMonth() === today.getMonth() &&
+      dateObject.getFullYear() === today.getFullYear();
+
     return (
       <>
         <div>
-          <div>
-            {day} {month} {year}
-          </div>
-          {time}
+          {isToday ? (
+            <div>{time}</div>
+          ) : (
+            <div>
+              {day} {month} {year}
+            </div>
+          )}
         </div>
       </>
     );
@@ -283,9 +292,37 @@ function Dashboard() {
                     </p>
                   </div>
                   <p className="col-span-2 text-right max-md:text-xs">
-                    {isInboxItem(item)
-                      ? parseDate(item.CreatedAt)
-                      : parseDate(item.S_CreatedAt)}
+                    {isInboxItem(item) ? (
+                      <div>
+                        <div
+                          className={`font-medium ${
+                            item.Status === "Accepted"
+                              ? "text-green-500"
+                              : item.Status === "Pending"
+                                ? "text-orange-500"
+                                : "text-red-500"
+                          }`}
+                        >
+                          {item.Status}
+                        </div>
+                        {parseDate(item.CreatedAt)}
+                      </div>
+                    ) : (
+                      <div>
+                        <div
+                          className={`font-medium ${
+                            item.S_Status === "Accepted"
+                              ? "text-green-500"
+                              : item.S_Status === "Pending"
+                                ? "text-orange-500"
+                                : "text-red-500"
+                          }`}
+                        >
+                          {item.S_Status}
+                        </div>
+                        {parseDate(item.S_CreatedAt)}
+                      </div>
+                    )}
                   </p>
                 </Link>
               ),

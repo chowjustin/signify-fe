@@ -4,22 +4,28 @@ import { useState } from "react";
 import Button from "@/components/buttons/Button";
 import Modal from "@/components/modal/Modal";
 import Input from "@/components/form/Input";
-import { User } from "@/types/user";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import { SubmitModal } from "@/components/modal/variants/submitModal";
-import { removeToken } from "@/lib/cookies";
 
 type ModalReturnType = {
   openModal: () => void;
 };
 
+type AcceptData = {
+  req_id: string;
+  password: string;
+  confirmpassword?: string;
+};
+
 export function AcceptModal({
   children,
+  id,
 }: {
   children: (props: ModalReturnType) => JSX.Element;
+  id: string;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const modalReturn: ModalReturnType = {
@@ -29,15 +35,15 @@ export function AcceptModal({
   const [response, setResponse] = useState("not submitted");
   const isPending = false;
 
-  const methods = useForm<User>({
+  const methods = useForm<AcceptData>({
     mode: "onChange",
   });
 
   const { reset, handleSubmit } = methods;
 
   const updateMutation = useMutation({
-    mutationFn: async (updatedData: User) => {
-      return await api.patch(`/users/`, updatedData);
+    mutationFn: async (updatedData: AcceptData) => {
+      return await api.post(`/sign/accept`, updatedData);
     },
     onSuccess: () => {
       toast.success("Berhasil mengupdate Password!");
@@ -48,8 +54,10 @@ export function AcceptModal({
     },
   });
 
-  const onSubmit = (formData: User) => {
-    updateMutation.mutate(formData);
+  const onSubmit = (formData: AcceptData) => {
+    const { confirmpassword, ...updatedData } = formData;
+    updatedData.req_id = id;
+    updateMutation.mutate(updatedData);
   };
 
   return (
@@ -68,7 +76,7 @@ export function AcceptModal({
           onClose={onClose}
           buttonCrossClassName="hidden"
         >
-          Edit Password
+          Accept Tanda Tangan
         </Modal.Header>
 
         <Modal.Body className="text-left px-[30px] mt-[30px]">
@@ -81,10 +89,10 @@ export function AcceptModal({
                 <Input
                   id="password"
                   type="password"
-                  label="Password Baru"
-                  placeholder="Password Baru"
+                  label="Password"
+                  placeholder="Password"
                   validation={{
-                    required: "Password Baru Harus Diisi",
+                    required: "Password Harus Diisi",
                     minLength: {
                       value: 6,
                       message: "Password Minimal 6 Karakter",
@@ -94,10 +102,10 @@ export function AcceptModal({
                 <Input
                   id="confirmpassword"
                   type="password"
-                  label="Konfirmasi Password Baru"
-                  placeholder="Konfirmasi Password Baru"
+                  label="Konfirmasi Password"
+                  placeholder="Konfirmasi Password"
                   validation={{
-                    required: "Konfirmasi Password Baru Harus Diisi",
+                    required: "Konfirmasi Password Harus Diisi",
                     minLength: {
                       value: 6,
                       message: "Password Minimal 6 Karakter",
@@ -125,10 +133,10 @@ export function AcceptModal({
               Batal
             </Button>
             <SubmitModal
-              message="Password berhasil diupdate!"
-              path="/dashboard/profile"
+              message="Berhasil menandatangani dokumen!"
+              path="/dashboard"
               onSubmit={handleSubmit(onSubmit)}
-              onReset={removeToken}
+              onReset={reset}
               response={response}
             >
               {({ openModal }) => (

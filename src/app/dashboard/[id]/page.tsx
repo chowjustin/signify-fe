@@ -8,7 +8,7 @@ import {
 import SelectableInput from "@/components/form/SelectableInput";
 import { usePathname, useRouter } from "next/navigation";
 import { AxiosError, AxiosResponse } from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ApiError } from "@/types/api";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
@@ -37,10 +37,22 @@ type SignUpRequest = {
 
 export default function TambahAjuan() {
   const methods = useForm<SignUpRequest>({ mode: "onChange" });
-  const { handleSubmit, control } = methods;
 
   const path = usePathname();
   const pathId = path.split("/").pop();
+
+  const { data } = useQuery({
+    queryKey: ["detail", pathId],
+    queryFn: async () => {
+      const response = await api.get(`/sign/${pathId}`);
+      return response.data.data;
+    },
+  });
+
+  const statusPending = data?.Status === "Pending" ? true : false;
+  const isSender = data?.IsSender === true ? true : false;
+
+  const { handleSubmit, control } = methods;
 
   const breadCrumbs = [
     { href: "/dashboard", Title: "Dashboard" },
@@ -110,7 +122,9 @@ export default function TambahAjuan() {
   const onSubmit: SubmitHandler<SignUpRequest> = (data) => {
     SignUpMutation(data);
   };
-  const fileUrl = file?.[0] ? URL.createObjectURL(file[0]) : null;
+  // const fileUrl = file?.[0] ? URL.createObjectURL(file[0]) : null;
+  const fileUrl = data?.Document;
+
   return (
     <section className="p-6 pb-12">
       <div className="relative w-full h-full rounded-[15px] min-h-[64px] overflow-hidden">
@@ -130,9 +144,26 @@ export default function TambahAjuan() {
         </div>
       </div>
       <div className="w-full pt-[30px]">
-        <h1 className="font-bold text-xl">Judul</h1>
-        <p className="text-sm mt-3">Sender</p>
-        <h6 className="text-md mt-[30px]">cover letter</h6>
+        <div className="flex max-md:flex-col justify-between">
+          <h1 className="font-bold text-xl">{data?.Topic}</h1>
+          <div
+            className={
+              data?.Status === "Accepted"
+                ? "text-green-500"
+                : data?.Status === "Pending"
+                  ? "text-orange-500"
+                  : "text-red-500"
+            }
+          >
+            <span className="text-sm font-medium">{data?.Status}</span>
+          </div>
+        </div>
+        <p className="text-sm mt-3">
+          {isSender ? "To: " : "From: "} {data?.Username} {"<"}
+          {data?.Email}
+          {">"}
+        </p>
+        <h6 className="text-md mt-[30px]">{data?.CoverLetter}</h6>
         {/* File Preview */}
         <LabelText labelTextClasname="mt-8 mb-4">File Preview</LabelText>
         <div className="lg:w-[75%] w-full 2xl:w-[50%] bg-gray-100 h-[80dvh] p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
@@ -151,8 +182,12 @@ export default function TambahAjuan() {
           )}
         </div>
       </div>
-      <div className="lg:w-[75%] w-full 2xl:w-[50%] flex justify-center gap-4 max-md:gap-2 mt-6">
-        <RejectModal path="/dashboard">
+      <div
+        className={`lg:w-[75%] w-full 2xl:w-[50%] flex justify-center gap-4 max-md:gap-2 mt-6 ${
+          !statusPending && "hidden"
+        } ${isSender && "hidden"}`}
+      >
+        <RejectModal id={data?.ID}>
           {({ openModal }) => (
             <Button
               variant="red"
@@ -164,7 +199,7 @@ export default function TambahAjuan() {
             </Button>
           )}
         </RejectModal>
-        <AcceptModal>
+        <AcceptModal id={data?.ID}>
           {({ openModal }) => (
             <Button
               variant="primary"
