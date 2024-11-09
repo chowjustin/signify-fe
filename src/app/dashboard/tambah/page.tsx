@@ -105,7 +105,7 @@ export default function TambahAjuan() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setSelection({ x, y, w: 0, height: 0 });
+    setSelection({ x, y, w: 60, height: 35 });
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
