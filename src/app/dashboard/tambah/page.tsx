@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useForm,
-  FormProvider,
-  SubmitHandler,
-  useWatch,
-} from "react-hook-form";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import SelectableInput from "@/components/form/SelectableInput";
 import { useRouter } from "next/navigation";
 import { AxiosError, AxiosResponse } from "axios";
@@ -39,10 +34,9 @@ const breadCrumbs = [
 
 export default function TambahAjuan() {
   const methods = useForm<SignUpRequest>({ mode: "onChange" });
-  const { handleSubmit, control } = methods;
+  const { handleSubmit } = methods;
   const router = useRouter();
 
-  const file = useWatch({ control, name: "document" });
   const [selection, setSelection] = useState<{
     x: number;
     y: number;
@@ -225,7 +219,14 @@ export default function TambahAjuan() {
     SignUpMutation(formData);
   };
 
-  const fileUrl = file?.[0] ? URL.createObjectURL(file[0]) : null;
+  const [fileUrl, setFileUrl] = useState<string>("");
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const handleFileUpload = (files: any) => {
+    if (files.length > 0) {
+      setFileUrl(files[0].preview);
+    }
+  };
 
   return (
     <section className="p-6">
@@ -272,6 +273,7 @@ export default function TambahAjuan() {
                     maxSize={2000000}
                     helperText="Format file .pdf, maksimum 2 MB"
                     validation={{ required: "File surat wajib diupload" }}
+                    onFileUpload={handleFileUpload}
                   />
                 </div>
                 <LabelText labelTextClasname="mt-4">

@@ -28,6 +28,7 @@ export type DropzoneInputProps = {
   disabled?: boolean;
   maxSize?: number;
   className?: string;
+  onFileUpload?: (files: FileWithPreview[]) => void;
 };
 
 export default function UploadFile({
@@ -44,6 +45,7 @@ export default function UploadFile({
   maxSize = 1000000,
   className,
   disabled = false,
+  onFileUpload,
 }: DropzoneInputProps) {
   const {
     control,
@@ -85,6 +87,10 @@ export default function UploadFile({
       setFiles(acceptedFilesPreview.slice(0, maxFiles));
       setValue(id, acceptedFilesPreview.slice(0, maxFiles));
       clearErrors(id);
+
+      if (onFileUpload) {
+        onFileUpload(acceptedFilesPreview);
+      }
     },
     [clearErrors, maxFiles, maxSize, setError, setValue, id],
   );

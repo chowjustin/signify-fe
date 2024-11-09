@@ -298,7 +298,8 @@ function Dashboard() {
                           className={`font-medium ${
                             item.Status === "Accepted"
                               ? "text-green-500"
-                              : item.Status === "Pending"
+                              : item.Status === "Pending" ||
+                                  item.Status === "Modified"
                                 ? "text-orange-500"
                                 : "text-red-500"
                           }`}
@@ -313,7 +314,8 @@ function Dashboard() {
                           className={`font-medium ${
                             item.S_Status === "Accepted"
                               ? "text-green-500"
-                              : item.S_Status === "Pending"
+                              : item.S_Status === "Pending" ||
+                                  item.S_Status === "Modified"
                                 ? "text-orange-500"
                                 : "text-red-500"
                           }`}

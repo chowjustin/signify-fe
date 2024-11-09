@@ -11,6 +11,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { AcceptModal } from "./modal/acceptModal";
 import { RejectModal } from "./modal/rejectModal";
+import { EditModal } from "./modal/editModal";
 
 export default function TambahAjuan() {
   const path = usePathname();
@@ -30,6 +31,7 @@ export default function TambahAjuan() {
   });
 
   const statusPending = data?.Status === "Pending" ? true : false;
+  const isAccepted = data?.Status === "Accepted" ? true : false;
   const isSender = data?.IsSender === true ? true : false;
   const fileUrl = data?.Document;
 
@@ -58,7 +60,7 @@ export default function TambahAjuan() {
             className={
               data?.Status === "Accepted"
                 ? "text-green-500"
-                : data?.Status === "Pending"
+                : data?.Status === "Pending" || data?.Status === "Modified"
                   ? "text-orange-500"
                   : "text-red-500"
             }
@@ -75,7 +77,12 @@ export default function TambahAjuan() {
         {/* File Preview */}
         <div className="flex items-center justify-between mt-8 gap-2 mb-4 lg:w-[75%] w-full 2xl:w-[50%]">
           <LabelText>File Preview</LabelText>
-          <a href={fileUrl} download className="">
+          <a
+            href={fileUrl}
+            download
+            className={`${isAccepted ? "flex" : "hidden"}`}
+            target="blank"
+          >
             <Button variant="outline" size="sm">
               Download File
             </Button>
@@ -111,6 +118,18 @@ export default function TambahAjuan() {
             </Button>
           )}
         </RejectModal>
+        <EditModal id={data?.ID} url={fileUrl}>
+          {({ openModal }) => (
+            <Button
+              variant="yellow"
+              size="base"
+              className="min-h-8 max-w-24 px-9 py-0.5"
+              onClick={openModal}
+            >
+              Edit
+            </Button>
+          )}
+        </EditModal>
         <AcceptModal id={data?.ID}>
           {({ openModal }) => (
             <Button
