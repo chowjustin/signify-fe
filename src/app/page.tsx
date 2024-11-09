@@ -6,7 +6,7 @@ import Layout from "@/layouts/Layout";
 export default function Home() {
   return (
     <Layout withNavbar withFooter>
-      <main>
+      <main className="overflow-hidden">
         <Hero />
         <About />
         <Footer />
