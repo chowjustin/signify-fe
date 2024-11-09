@@ -309,6 +309,7 @@ export default function TambahAjuan() {
                   label="Cover Letter"
                   placeholder="Cover Letter"
                   className="min-h-[200px]"
+                  validation={{ required: "Cover letter harus diisi" }}
                 />
               </div>
 

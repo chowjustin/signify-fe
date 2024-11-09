@@ -190,7 +190,7 @@ function Dashboard() {
             {inboxTotalPages > 0 && (
               <div className="flex items-center justify-between mt-4">
                 <span className="text-sm max-md:text-xs">
-                  Page {currentInboxPage} dari {inboxTotalPages}
+                  Page {currentInboxPage + 1} dari {inboxTotalPages + 1}
                 </span>
                 <button
                   onClick={handleInboxPrevPage}
@@ -214,7 +214,7 @@ function Dashboard() {
             {sentTotalPages > 0 && (
               <div className="flex items-center justify-between mt-4">
                 <span className="text-sm max-md:text-xs">
-                  Page {currentSentPage} dari {sentTotalPages}
+                  Page {currentSentPage + 1} dari {sentTotalPages + 1}
                 </span>
                 <button
                   onClick={handleSentPrevPage}
