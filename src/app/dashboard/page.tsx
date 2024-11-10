@@ -45,6 +45,8 @@ function Dashboard() {
     return localStorage.getItem("selectedView") || "inbox";
   });
 
+  const [selectedStatus, setSelectedStatus] = useState("All");
+
   useEffect(() => {
     localStorage.setItem("selectedView", selectedView);
   }, [selectedView]);
@@ -66,6 +68,16 @@ function Dashboard() {
       const response = await api.get(`/sign/sent?page=${currentSentPage}`);
       return response.data;
     },
+  });
+
+  const filteredInbox = inbox?.data.filter((item: InboxData) => {
+    if (selectedStatus === "All") return true;
+    return item.Status === selectedStatus;
+  });
+
+  const filteredSent = sent?.data.filter((item: SentData) => {
+    if (selectedStatus === "All") return true;
+    return item.S_Status === selectedStatus;
   });
 
   const inboxTotalPages = inbox?.total_pages - 1;
@@ -191,6 +203,17 @@ function Dashboard() {
           </Button>
         </div>
 
+        <select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          className="border border-gray-300 p-2 rounded max-md:text-xs w-fit"
+        >
+          <option value="All">All</option>
+          <option value="Accepted">Accepted</option>
+          <option value="Pending">Pending</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+
         {selectedView === "inbox" ? (
           <>
             {inboxTotalPages > 0 && (
@@ -258,8 +281,9 @@ function Dashboard() {
         </div>
 
         <div>
-          {(selectedView === "inbox" ? inbox?.data : sent?.data)?.length > 0 ? (
-            (selectedView === "inbox" ? inbox.data : sent.data).map(
+          {(selectedView === "inbox" ? filteredInbox : filteredSent)?.length >
+          0 ? (
+            (selectedView === "inbox" ? filteredInbox : filteredSent).map(
               (item: InboxData | SentData, index: number) => (
                 <Link
                   href={`/dashboard/${
