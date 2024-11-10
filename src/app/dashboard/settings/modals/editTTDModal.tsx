@@ -93,6 +93,10 @@ export function EditTTDModal({
                   label="Upload Tanda Tangan Baru"
                   id="ttd"
                   maxSize={2000000}
+                  accept={{
+                    "image/*": [".jpg", ".jpeg", ".png"],
+                  }}
+                  maxFiles={1}
                   helperText="Format file .jpeg .jpg .png, maksimum 2 MB"
                   validation={{
                     required: "File tanda tangan baru wajib diupload",

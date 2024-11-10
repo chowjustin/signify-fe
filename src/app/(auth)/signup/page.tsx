@@ -138,6 +138,10 @@ export default function SignUp() {
                   label="Upload File"
                   id="file"
                   maxSize={2000000}
+                  accept={{
+                    "image/*": [".jpg", ".jpeg", ".png"],
+                  }}
+                  maxFiles={1}
                   helperText="Format file .jpeg .jpg .png, maksimum 2 MB"
                   validation={{ required: "This field is required" }}
                 />

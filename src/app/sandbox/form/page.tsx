@@ -69,6 +69,11 @@ export default function FormSandbox() {
                 label="Upload File"
                 id="image"
                 maxSize={2000000}
+                accept={{
+                  "image/*": [".jpg", ".jpeg", ".png"],
+                  "application/pdf": [".pdf"],
+                }}
+                maxFiles={1}
                 helperText="Format file .jpeg .jpg .png .pdf, maksimum 2 MB"
                 validation={{ required: "This field is required" }}
               />

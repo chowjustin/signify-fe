@@ -271,6 +271,10 @@ export default function TambahAjuan() {
                     label="Upload Surat"
                     id="document"
                     maxSize={2000000}
+                    accept={{
+                      "application/pdf": [".pdf"],
+                    }}
+                    maxFiles={1}
                     helperText="Format file .pdf, maksimum 2 MB"
                     validation={{ required: "File surat wajib diupload" }}
                     onFileUpload={handleFileUpload}
