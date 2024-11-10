@@ -8,10 +8,11 @@ import LabelText from "@/components/form/LabelText";
 import NextImage from "@/components/NextImage";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
 import { AcceptModal } from "./modal/acceptModal";
 import { RejectModal } from "./modal/rejectModal";
 import { EditModal } from "./modal/editModal";
+import { useEffect, useState } from "react";
 
 export default function TambahAjuan() {
   const path = usePathname();
@@ -34,6 +35,71 @@ export default function TambahAjuan() {
   const isAccepted = data?.Status === "Accepted" ? true : false;
   const isSender = data?.IsSender === true ? true : false;
   const fileUrl = data?.Document;
+
+  const [scaledX, setScaledX] = useState(0);
+  const [scaledY, setScaledY] = useState(0);
+  const [scaledW, setScaledW] = useState(0);
+  const [scaledH, setScaledH] = useState(50);
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const renderPage = (props: any) => (
+    <div
+      id="preview-page"
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        cursor: "default",
+        zIndex: 100,
+      }}
+    >
+      {props.canvasLayer.children}
+
+      <div
+        className={`${isSender && !isAccepted ? "flex" : "hidden"}`}
+        style={{
+          position: "absolute",
+          left: scaledX,
+          top: scaledY,
+          width: scaledW,
+          height: scaledH,
+          border: "2px dashed blue",
+          backgroundColor: "rgba(0, 0, 255, 0.1)",
+          pointerEvents: "none",
+        }}
+      />
+    </div>
+  );
+
+  useEffect(() => {
+    const checkPageExists = () => {
+      const page = document.getElementById("preview-page");
+      if (page && data?.Position) {
+        const x = data.Position.x;
+        const y = data.Position.y;
+        const w = data.Position.w;
+
+        const rect = page.getBoundingClientRect();
+
+        const scaleX = 595 / rect.width;
+        const scaleY = 842 / rect.height;
+
+        setScaledX(x / scaleX);
+        setScaledY(y / scaleY);
+        setScaledW(w / scaleX);
+        setScaledH(50 / scaleY);
+
+        clearInterval(intervalId);
+      }
+    };
+
+    const intervalId = setInterval(checkPageExists, 100);
+    return () => clearInterval(intervalId);
+  }, [data]);
 
   return (
     <section className="p-6 pb-12">
@@ -89,12 +155,16 @@ export default function TambahAjuan() {
           </a>
         </div>
 
-        <div className="lg:w-[75%] w-full 2xl:w-[50%] bg-gray-100 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+        <div className="lg:w-[75%] w-full 2xl:w-[50%] max-md:h-[45vh] h-[80vh] bg-gray-100 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
           {fileUrl ? (
             <Worker
               workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
             >
-              <Viewer fileUrl={fileUrl} />
+              <Viewer
+                fileUrl={fileUrl}
+                defaultScale={SpecialZoomLevel.PageFit}
+                renderPage={renderPage}
+              />
             </Worker>
           ) : (
             <p className="text-center text-gray-500">File not uploaded</p>
