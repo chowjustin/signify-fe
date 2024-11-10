@@ -280,7 +280,7 @@ export default function TambahAjuan() {
                   Select Coordinates{" "}
                   <span className="max-md:hidden">on the Preview</span>
                 </LabelText>
-                <div className="w-full md:hidden h-[45dvh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+                <div className="w-full md:hidden h-[45vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
                   {fileUrl ? (
                     <Worker
                       workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
@@ -331,7 +331,7 @@ export default function TambahAjuan() {
           </FormProvider>
         </div>
         {/* File Preview */}
-        <div className="w-[50%] max-md:hidden max-md:h-full bg-gray-100 h-[80dvh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+        <div className="w-[50%] max-md:hidden max-md:h-full bg-gray-100 h-[80vh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
           {fileUrl ? (
             <Worker
               workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}

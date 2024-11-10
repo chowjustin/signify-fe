@@ -248,7 +248,7 @@ export function EditModal({
               <LabelText labelTextClasname="mt-4">
                 Select Coordinates on the Preview
               </LabelText>
-              <div className="w-full h-[50dvh] max-[450px]:h-[40dvh] max-[400px]:h-[35dvh] max-[350px]:h-[30dvh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+              <div className="w-full h-[50vh] max-[450px]:h-[40vh] max-[400px]:h-[35vh] max-[350px]:h-[30vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
                 {fileUrl ? (
                   <Worker
                     workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
