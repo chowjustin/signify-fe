@@ -54,12 +54,15 @@ function Verify() {
     index: number,
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const { value } = e.target;
+    // biome-ignore lint/style/useConst: <explanation>
+    let { value } = e.target;
 
-    if (/^\d*$/.test(value)) {
+    if (/^\d?$/.test(value)) {
       setValue(`code.${index}`, value);
-      const nextInput = inputsRef.current[index + 1];
-      if (nextInput && value) nextInput.focus();
+      if (value.length === 1) {
+        const nextInput = inputsRef.current[index + 1];
+        if (nextInput) nextInput.focus();
+      }
     }
   };
 
@@ -144,8 +147,10 @@ function Verify() {
                     <input
                       {...field}
                       ref={(el) => setInputRef(index, el)}
-                      type="number"
+                      type="text"
                       maxLength={1}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className="w-12 h-12 max-sm:w-8 max-sm:h-8 border border-gray-300 rounded-md text-center text-xl focus:ring-2 focus:ring-primary focus:outline-none"
                       onChange={(e) => handleInput(index, e)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
