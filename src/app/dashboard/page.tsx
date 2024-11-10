@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Button from "@/components/buttons/Button";
 import withAuth from "@/components/hoc/withAuth";
@@ -41,7 +41,13 @@ function isInboxItem(item: InboxData | SentData): item is InboxData {
 
 export default withAuth(Dashboard, "user");
 function Dashboard() {
-  const [selectedView, setSelectedView] = useState("inbox");
+  const [selectedView, setSelectedView] = useState(() => {
+    return localStorage.getItem("selectedView") || "inbox";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("selectedView", selectedView);
+  }, [selectedView]);
 
   const [currentInboxPage, setCurrentInboxPage] = useState(0);
   const [currentSentPage, setCurrentSentPage] = useState(0);

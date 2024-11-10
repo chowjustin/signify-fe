@@ -100,12 +100,15 @@ export default function TambahAjuan() {
     }
   };
 
+  const [width, setWidth] = useState(60);
+  const [height, setHeight] = useState(35);
+
   const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
     const rect = page.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setSelection({ x, y, w: 60, height: 35 });
+    setSelection({ x, y, w: width, height: height });
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -282,6 +285,29 @@ export default function TambahAjuan() {
                 </div>
                 <LabelText labelTextClasname="mt-4">
                   Select Coordinates{" "}
+                  <span className="md:hidden">Area Size</span>
+                  <div className="md:hidden">
+                    <div className="flex items-center mt-2 gap-2 w-[50%]">
+                      Width:
+                      <Input
+                        id="width"
+                        type="number"
+                        value={width}
+                        onChange={(e) => setWidth(parseInt(e.target.value))}
+                        className="px-2 py-1"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1 w-[50%]">
+                      Height:
+                      <Input
+                        id="height"
+                        type="number"
+                        value={height}
+                        onChange={(e) => setHeight(parseInt(e.target.value))}
+                        className="px-2 py-1"
+                      />
+                    </div>
+                  </div>
                   <span className="max-md:hidden">on the Preview</span>
                 </LabelText>
                 <div className="w-full md:hidden h-[45vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">

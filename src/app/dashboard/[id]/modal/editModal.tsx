@@ -1,9 +1,6 @@
 "use client";
 
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { AxiosError, AxiosResponse } from "axios";
-import { useMutation } from "@tanstack/react-query";
-import api from "@/lib/api";
 import toast from "react-hot-toast";
 import Button from "@/components/buttons/Button";
 import LabelText from "@/components/form/LabelText";
@@ -13,14 +10,15 @@ import { useEffect, useRef, useState } from "react";
 
 import Modal from "@/components/modal/Modal";
 
-import { SubmitModal } from "@/components/modal/variants/submitModal";
 import { useDisclosure } from "@nextui-org/modal";
+import { ModifyModal } from "./modifyModal";
+import Input from "@/components/form/Input";
 
 type ModalReturnType = {
   openModal: () => void;
 };
 
-type EditData = {
+export type EditData = {
   id: string;
   x: string;
   y: string;
@@ -44,7 +42,6 @@ export function EditModal({
   };
   const methods = useForm<EditData>({ mode: "onChange" });
   const { reset, handleSubmit } = methods;
-  const [response, setResponse] = useState("not submitted");
 
   const [selection, setSelection] = useState<{
     x: number;
@@ -109,12 +106,15 @@ export function EditModal({
     }
   };
 
+  const [width, setWidth] = useState(60);
+  const [height, setHeight] = useState(35);
+
   const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
     const rect = page.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setSelection({ x, y, w: 0, height: 0 });
+    setSelection({ x, y, w: width, height: height });
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -175,24 +175,16 @@ export function EditModal({
     </div>
   );
 
-  const { mutate: updateMutation, isPending } = useMutation<
-    AxiosResponse,
-    AxiosError,
-    EditData
-  >({
-    mutationFn: async (updatedData: EditData) => {
-      return await api.patch(`/sign/modify`, updatedData);
-    },
-    onSuccess: () => {
-      toast.success("Berhasil mengubah posisi tanda tangan!");
-      setResponse("submitted");
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
+  const [modalData, setModalData] = useState<EditData>({
+    id: "",
+    x: "0",
+    y: "0",
+    w: "0",
+    password: "",
+    confirmpassword: undefined,
   });
 
-  const onSubmit: SubmitHandler<EditData> = (data) => {
+  const onSubmit: SubmitHandler<EditData> = () => {
     if (!selection) {
       toast.error("Please select coordinates on the preview");
       return;
@@ -210,12 +202,16 @@ export function EditModal({
     const scaledY = selection.y * scaleY;
     const scaledW = selection.w * scaleX;
 
-    data.x = scaledX.toFixed(0);
-    data.y = scaledY.toFixed(0);
-    data.w = scaledW.toFixed(0);
-    data.id = id;
+    const preparedData: EditData = {
+      id: id,
+      x: scaledX.toFixed(0),
+      y: scaledY.toFixed(0),
+      w: scaledW.toFixed(0),
+      password: "",
+      confirmpassword: "",
+    };
 
-    updateMutation(data);
+    setModalData(preparedData);
   };
 
   const fileUrl = url;
@@ -246,9 +242,32 @@ export function EditModal({
               className="space-y-5 h-full mb-4"
             >
               <LabelText labelTextClasname="mt-4">
-                Select Coordinates on the Preview
+                Select Coordinates <span className="md:hidden">Area Size</span>
+                <div className="md:hidden">
+                  <div className="flex items-center mt-2 gap-2 w-[50%]">
+                    Width:
+                    <Input
+                      id="width"
+                      type="number"
+                      value={width}
+                      onChange={(e) => setWidth(parseInt(e.target.value))}
+                      className="px-2 py-1"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1 w-[50%]">
+                    Height:
+                    <Input
+                      id="height"
+                      type="number"
+                      value={height}
+                      onChange={(e) => setHeight(parseInt(e.target.value))}
+                      className="px-2 py-1"
+                    />
+                  </div>
+                </div>
+                <span className="max-md:hidden">on the Preview</span>
               </LabelText>
-              <div className="w-full h-[50vh] max-[450px]:h-[40vh] max-[400px]:h-[35vh] max-[350px]:h-[30vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+              <div className="w-full h-[45vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
                 {fileUrl ? (
                   <Worker
                     workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
@@ -288,13 +307,7 @@ export function EditModal({
             >
               Batal
             </Button>
-            <SubmitModal
-              message="Berhasil menandatangani dokumen!"
-              path="/dashboard"
-              onSubmit={handleSubmit(onSubmit)}
-              onReset={reset}
-              response={response}
-            >
+            <ModifyModal data={modalData}>
               {({ openModal }) => (
                 <Button
                   variant="primary"
@@ -303,16 +316,16 @@ export function EditModal({
                     if (!selection) {
                       toast.error("Please select coordinates on the preview");
                     } else {
+                      onSubmit(modalData);
                       openModal();
                     }
                   }}
-                  isLoading={isPending}
                   className="w-1/2"
                 >
                   Simpan
                 </Button>
               )}
-            </SubmitModal>
+            </ModifyModal>
           </div>
         </Modal.Footer>
       </Modal>

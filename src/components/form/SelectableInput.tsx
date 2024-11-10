@@ -83,6 +83,7 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
               "hover:ring-1 hover:ring-inset hover:ring-[#4FD1C5]",
               "placeholder:text-sm placeholder:text-gray-500",
               "text-gray-900",
+              selectedSize && "placeholder:text-gray-900",
               errors[id] &&
                 "border-none ring-2 ring-inset ring-red-500 placeholder:text-gray-500 focus:ring-red-500 mb-2",
               `${className}`,

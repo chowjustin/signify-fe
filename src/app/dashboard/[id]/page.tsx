@@ -139,7 +139,9 @@ export default function TambahAjuan() {
           {data?.Email}
           {">"}
         </p>
-        <h6 className="text-md mt-[30px]">{data?.CoverLetter}</h6>
+        <p className="text-md mt-[30px] max-w-full break-words">
+          {data?.CoverLetter}
+        </p>
         {/* File Preview */}
         <div className="flex items-center justify-between mt-8 gap-2 mb-4 lg:w-[75%] w-full 2xl:w-[50%]">
           <LabelText>File Preview</LabelText>
