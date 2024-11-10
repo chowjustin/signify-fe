@@ -225,7 +225,7 @@ export function EditModal({
         backdrop="opaque"
         scrollBehavior="inside"
         backdropClassName="bg-[#17171F] bg-opacity-60"
-        className=" max-md:px-4 flex mx-auto border-none"
+        className=" flex max-md:px-4 mx-auto border-none"
       >
         <Modal.Header
           className="flex mt-[30px] px-[30px]"
