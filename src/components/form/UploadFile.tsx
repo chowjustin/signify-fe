@@ -29,6 +29,8 @@ export type DropzoneInputProps = {
   maxSize?: number;
   className?: string;
   onFileUpload?: (files: FileWithPreview[]) => void;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  onDrop?: any;
 };
 
 export default function UploadFile({
@@ -79,7 +81,6 @@ export default function UploadFile({
         return;
       }
 
-      // Generate previews and update the form value
       const acceptedFilesPreview = acceptedFiles.map((file: T) =>
         Object.assign(file, { preview: URL.createObjectURL(file) }),
       );
@@ -102,7 +103,6 @@ export default function UploadFile({
   };
 
   React.useEffect(() => {
-    // Clean up object URLs
     return () => {
       files.forEach((file) => URL.revokeObjectURL(file.preview));
     };
@@ -144,7 +144,7 @@ export default function UploadFile({
               <input
                 {...getInputProps({
                   onChange: (e) => {
-                    onChange(e.target.files); // Register files with react-hook-form
+                    onChange(e.target.files);
                   },
                 })}
               />
