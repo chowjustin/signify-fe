@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
 import { IoHome } from "react-icons/io5";
-import { MdRocketLaunch } from "react-icons/md";
 
 type ChildrenLayoutProps = {
   children: ReactNode;
@@ -12,14 +11,9 @@ type ChildrenLayoutProps = {
 
 const NavbarLinks = [
   {
-    title: "Home",
+    title: "Dashboard",
     icon: IoHome,
-    link: "/",
-  },
-  {
-    title: "Profile",
-    icon: FaRegUser,
-    link: "/dashboard/profile",
+    link: "/dashboard",
   },
   {
     title: "Tambah Ajuan",
@@ -27,9 +21,9 @@ const NavbarLinks = [
     link: "/dashboard/tambah",
   },
   {
-    title: "Dashboard",
-    icon: MdRocketLaunch,
-    link: "/dashboard",
+    title: "Profile",
+    icon: FaRegUser,
+    link: "/dashboard/profile",
   },
 ];
 

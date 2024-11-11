@@ -17,6 +17,7 @@ import TextArea from "@/components/form/TextArea";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
 import { useEffect, useRef, useState } from "react";
+import useFileStore from "@/app/stores/useFileStore";
 
 type SignUpRequest = {
   recipient: string;
@@ -222,14 +223,26 @@ export default function TambahAjuan() {
     SignUpMutation(formData);
   };
 
+  const { isFileDeleted, setIsFileDeleted } = useFileStore();
+
   const [fileUrl, setFileUrl] = useState<string>("");
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const handleFileUpload = (files: any) => {
     if (files.length > 0) {
       setFileUrl(files[0].preview);
+      setIsFileDeleted(false);
+    } else {
+      setFileUrl("");
+      setIsFileDeleted(true);
     }
   };
+
+  useEffect(() => {
+    if (isFileDeleted) {
+      setFileUrl("");
+    }
+  }, [isFileDeleted]);
 
   return (
     <section className="p-6">
@@ -316,6 +329,7 @@ export default function TambahAjuan() {
                       workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
                     >
                       <Viewer
+                        key={fileUrl}
                         fileUrl={fileUrl}
                         defaultScale={SpecialZoomLevel.PageFit}
                         renderPage={renderPage}

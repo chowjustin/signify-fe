@@ -16,6 +16,7 @@ import ImagePreviewCard from "@/components/image/ImagePreviewCard";
 import Typography from "@/components/Typography";
 import clsxm from "@/lib/clsxm";
 import { FileWithPreview } from "@/types/form/dropzone";
+import useFileStore from "@/app/stores/useFileStore";
 
 export type DropzoneInputProps = {
   id: string;
@@ -96,10 +97,13 @@ export default function UploadFile({
     [clearErrors, maxFiles, maxSize, setError, setValue, id],
   );
 
+  const { setIsFileDeleted } = useFileStore();
+
   const onDelete = (index: number) => {
     const updatedFiles = files.filter((_, i) => i !== index);
     setFiles(updatedFiles);
     setValue(id, updatedFiles);
+    setIsFileDeleted(true);
   };
 
   React.useEffect(() => {

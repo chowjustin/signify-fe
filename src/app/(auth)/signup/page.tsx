@@ -128,7 +128,13 @@ export default function SignUp() {
                 id="username"
                 label="Username"
                 placeholder="Username"
-                validation={{ required: "Username is required" }}
+                validation={{
+                  required: "Username is required",
+                  pattern: {
+                    value: /^\S+$/,
+                    message: "Username must not contain spaces",
+                  },
+                }}
               />
               <Input
                 id="email"

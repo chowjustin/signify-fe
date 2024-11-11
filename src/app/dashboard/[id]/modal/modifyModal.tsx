@@ -41,7 +41,6 @@ export function ModifyModal({
       return await api.patch(`/sign/modify`, updatedData);
     },
     onSuccess: () => {
-      toast.success("Berhasil menandatangani dokumen di posisi baru!");
       setResponse("submitted");
     },
     onError: (err) => {
@@ -131,7 +130,7 @@ export function ModifyModal({
               Batal
             </Button>
             <SubmitModal
-              message="Berhasil menandatangani dokumen!"
+              message="Berhasil menandatangani dokumen di posisi baru!"
               path="/dashboard"
               onSubmit={handleSubmit(onSubmit)}
               onReset={reset}

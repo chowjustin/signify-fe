@@ -46,7 +46,6 @@ export function RejectModal({
       return await api.post(`/sign/reject`, updatedData);
     },
     onSuccess: () => {
-      toast.success("Berhasil menolak dokumen!");
       setResponse("submitted");
     },
     onError: (err) => {

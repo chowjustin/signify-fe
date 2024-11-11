@@ -4,12 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 import { IconType } from "react-icons";
-import {
-  FiChevronsLeft,
-  FiChevronsRight,
-  FiLogOut,
-  FiSettings,
-} from "react-icons/fi";
+import { FiChevronsLeft, FiChevronsRight, FiLogOut } from "react-icons/fi";
 import NextImage from "@/components/NextImage";
 import IconButton from "@/components/buttons/IconButton";
 import useAuthStore from "@/app/stores/useAuthStore";
@@ -112,7 +107,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
           </div>
 
           <div className="">
-            <Link
+            {/* <Link
               href={"/dashboard/settings"}
               className={`flex flex-row items-center space-x-5 my-6 hover:text-hover ${
                 isOpen ? "px-12" : ""
@@ -122,7 +117,7 @@ export default function Sidebar({ topNav }: SidenavProps) {
               <p className={`text-S1 ${isOpen ? "visible" : "hidden"}`}>
                 Pengaturan
               </p>
-            </Link>
+            </Link> */}
 
             <LogOut>
               {({ openModal }) => (
@@ -212,14 +207,14 @@ export default function Sidebar({ topNav }: SidenavProps) {
                     </Link>
                   ))}
                   <div className="px-2 absolute bottom-0">
-                    <Link
+                    {/* <Link
                       href={"/dashboard/settings"}
                       className={`flex flex-row items-center space-x-5 my-6 hover:text-hover px-12}`}
                       onClick={() => setIsSheetOpen(false)}
                     >
                       <FiSettings className={`text-2xl mx-auto`} />
                       <p className={`text-S1`}>Pengaturan</p>
-                    </Link>
+                    </Link> */}
 
                     <div
                       onClick={() => {

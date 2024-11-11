@@ -46,7 +46,6 @@ export function AcceptModal({
       return await api.post(`/sign/accept`, updatedData);
     },
     onSuccess: () => {
-      toast.success("Berhasil menandatangani dokumen!");
       setResponse("submitted");
     },
     onError: (err) => {
