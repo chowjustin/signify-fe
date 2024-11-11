@@ -1,9 +1,14 @@
-import Button from "@/components/buttons/Button";
-import React, { useRef, useState, useEffect, MouseEvent } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  MouseEvent,
+  TouchEvent,
+} from "react";
 
 interface SignatureCanvasProps {
   onSignatureChange: (file: File | null) => void;
-  disabled?: boolean; // Add this line to make `disabled` optional
+  disabled?: boolean;
 }
 
 const SignatureCanvas: React.FC<SignatureCanvasProps> = ({
@@ -21,27 +26,47 @@ const SignatureCanvas: React.FC<SignatureCanvasProps> = ({
     }
   }, []);
 
-  const startDrawing = (e: MouseEvent<HTMLCanvasElement>) => {
+  const getCoordinates = (e: MouseEvent | TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      if ("touches" in e) {
+        return {
+          x: e.touches[0].clientX - rect.left,
+          y: e.touches[0].clientY - rect.top,
+        };
+      }
+
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const startDrawing = (e: MouseEvent | TouchEvent) => {
+    e.preventDefault();
+    const { x, y } = getCoordinates(e);
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext("2d");
       if (context) {
-        const rect = canvas.getBoundingClientRect();
         context.beginPath();
-        context.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        context.moveTo(x, y);
         setIsDrawing(true);
       }
     }
   };
 
-  const draw = (e: MouseEvent<HTMLCanvasElement>) => {
+  const draw = (e: MouseEvent | TouchEvent) => {
     if (!isDrawing) return;
+    const { x, y } = getCoordinates(e);
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext("2d");
       if (context) {
-        const rect = canvas.getBoundingClientRect();
-        context.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        context.lineTo(x, y);
         context.stroke();
       }
     }
@@ -55,7 +80,6 @@ const SignatureCanvas: React.FC<SignatureCanvasProps> = ({
       if (context) {
         context.closePath();
         const dataUrl = canvas.toDataURL("image/png");
-        // Convert the data URL to a file and call the callback to update the form data
         fetch(dataUrl)
           .then((res) => res.blob())
           .then((blob) => {
@@ -86,18 +110,20 @@ const SignatureCanvas: React.FC<SignatureCanvasProps> = ({
         onMouseMove={draw}
         onMouseUp={endDrawing}
         onMouseLeave={endDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={endDrawing}
+        onTouchCancel={endDrawing}
         className="w-full aspect[5/3] border-2 border-dashed border-typo-secondary rounded-md"
       />
       <div className="flex w-full justify-center">
-        <Button
+        <button
           type="button"
-          size="sm"
-          variant="outline"
           onClick={clearCanvas}
-          className="mt-2"
+          className="mt-2 px-4 py-2 border-2 border-gray-300 rounded-md"
         >
           Clear
-        </Button>
+        </button>
       </div>
     </div>
   );
