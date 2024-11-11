@@ -51,6 +51,9 @@ function Profile() {
       />
       <div className="relative top-[-180px] pl-10">
         <BreadCrumbs breadcrumbs={breadCrumbs} />
+        <span className="font-semibold text-white max-md:-pt-1">
+          Profil Anda
+        </span>
       </div>
 
       <div className="w-[90%] flex gap-4 relative rounded-lg z-10 mt-[-72px] backdrop-blur-2xl shadow-lg  mx-auto p-6">

@@ -29,7 +29,7 @@ type SignUpRequest = {
 
 const breadCrumbs = [
   { href: "/dashboard", Title: "Dashboard" },
-  { href: "/dashboard/profile", Title: "Profil" },
+  { href: "/dashboard/tambah", Title: "Tambah Ajuan" },
 ];
 
 export default function TambahAjuan() {

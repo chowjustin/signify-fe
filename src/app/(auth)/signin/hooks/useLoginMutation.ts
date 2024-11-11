@@ -41,7 +41,7 @@ export default function useLoginMutation() {
         const username = data.username;
         router.replace(`/verify?username=${encodeURIComponent(username)}`);
       } else {
-        toast.error("Username atau password salah!");
+        toast.error(error.response?.data.message || error.message);
       }
     },
   });

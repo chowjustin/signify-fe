@@ -11,6 +11,8 @@ import { EditUsernameModal } from "./modals/editUsernameModal";
 import { EditEmailModal } from "./modals/editEmailModal";
 import { EditPasswordModal } from "./modals/editPasswordModal";
 import { EditTTDModal } from "./modals/editTTDModal";
+import { DeleteUserModal } from "./modals/deleteUserModal";
+import Button from "@/components/buttons/Button";
 
 const breadCrumbs = [
   { href: "/dashboard", Title: "Dashboard" },
@@ -126,6 +128,20 @@ function Settings() {
                 className="w-fit object-contain mt-2 rounded-lg overflow-hidden border-2 border-[#718096] p-2"
               />
             </div>
+          </div>
+          <div>
+            <DeleteUserModal>
+              {({ openModal }) => (
+                <Button
+                  variant="red"
+                  size="base"
+                  className="min-h-8 w-fit px-4 py-0.5"
+                  onClick={openModal}
+                >
+                  Delete User
+                </Button>
+              )}
+            </DeleteUserModal>
           </div>
         </div>
       </div>
