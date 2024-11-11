@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
+import useAuthStore from "@/app/stores/useAuthStore";
 
 export type SelectableInputProps = {
   id: string;
@@ -27,6 +28,8 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const { user } = useAuthStore();
+
   const {
     register,
     setValue,
@@ -41,8 +44,10 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
     },
   });
 
-  const filteredData = data?.filter((item: string) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredData = data?.filter(
+    (item: string) =>
+      item.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      item.toLowerCase() !== user?.username.toLowerCase(),
   );
 
   useEffect(() => {

@@ -54,11 +54,14 @@ export function EditModal({
   );
   const [isMdScreen, setIsMdScreen] = useState(false);
   const animationFrameId = useRef<number | null>(null);
+  const [screenSize, setScreenSize] = useState(1440);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMdScreen(window.innerWidth >= 768);
     };
+
+    setScreenSize(window.innerWidth);
 
     window.addEventListener("resize", handleResize);
     handleResize();
@@ -195,8 +198,8 @@ export function EditModal({
 
     const rect = page.getBoundingClientRect();
 
-    const scaleX = 595 / rect.width;
-    const scaleY = 842 / rect.height;
+    const scaleX = 595 / (screenSize >= 768 ? 227 : rect.width);
+    const scaleY = 842 / (screenSize >= 768 ? 322 : rect.height);
 
     const scaledX = selection.x * scaleX;
     const scaledY = selection.y * scaleY;
