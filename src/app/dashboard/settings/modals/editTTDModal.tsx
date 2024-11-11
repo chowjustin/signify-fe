@@ -75,14 +75,14 @@ export function EditTTDModal({
         className="md:min-w-[400px] w-full max-md:px-4 flex mx-auto border-none"
       >
         <Modal.Header
-          className="flex mt-[30px] px-[30px]"
+          className="flex pt-[30px] px-[30px]"
           onClose={onClose}
           buttonCrossClassName="hidden"
         >
           Edit Tanda Tangan
         </Modal.Header>
 
-        <Modal.Body className="text-left px-[30px] mt-[30px]">
+        <Modal.Body className="text-left px-[30px] pt-[30px] min-h-[110px]">
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -107,7 +107,7 @@ export function EditTTDModal({
           </FormProvider>
         </Modal.Body>
 
-        <Modal.Footer className="mt-5 mb-8">
+        <Modal.Footer className="pt-5 pb-8">
           <div className="flex w-full justify-center gap-[10px] px-[30px]">
             <Button
               variant="outline"

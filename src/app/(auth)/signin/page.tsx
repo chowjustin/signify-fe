@@ -96,6 +96,7 @@ function SignIn() {
           width={2000}
           height={2000}
           alt="background"
+          priority
           className="w-full h-full"
           imgClassName="w-full h-full"
         />
@@ -104,6 +105,7 @@ function SignIn() {
           width={1000}
           height={1000}
           alt="logo"
+          priority
           className="w-[60%] z-10 absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2"
         />
       </div>

@@ -29,6 +29,7 @@ function Settings() {
           width={1920}
           height={1080}
           alt="Background"
+          priority
           className="w-full h-full -z-10 min-h-[64px]"
           imgClassName="w-full h-[64px] md:h-[80px]"
         />
