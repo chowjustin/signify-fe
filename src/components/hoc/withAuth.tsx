@@ -77,31 +77,30 @@ export default function withAuth<T>(
         stopLoading();
         return;
       }
-      if (!user) {
-        const loadUser = async () => {
-          try {
-            const res = await api.get<ApiResponse<User>>("/users/me");
 
-            if (!res.data.data) {
-              toast.error("Sesi login tidak valid");
-              throw new Error("Sesi login tidak valid");
-            }
+      const loadUser = async () => {
+        try {
+          const res = await api.get<ApiResponse<User>>("/users/me");
 
-            login({
-              ...res.data.data,
-              token,
-            });
-          } catch (err) {
-            await removeToken();
-            console.error("Failed to fetch user data", err);
-          } finally {
-            stopLoading();
+          if (!res.data.data) {
+            toast.error("Sesi login tidak valid");
+            throw new Error("Sesi login tidak valid");
           }
-        };
 
-        loadUser();
-      }
-    }, [isAuthenticated, login, logout, stopLoading, user]);
+          login({
+            ...res.data.data,
+            token,
+          });
+        } catch (err) {
+          await removeToken();
+          console.error("Failed to fetch user data", err);
+        } finally {
+          stopLoading();
+        }
+      };
+
+      loadUser();
+    }, [isAuthenticated, login, logout, stopLoading]);
 
     React.useEffect(() => {
       checkAuth();
