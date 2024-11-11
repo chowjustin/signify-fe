@@ -1,21 +1,32 @@
-import { Metadata } from "next";
+"use client";
+import * as React from "react";
 
 import NextImage from "@/components/NextImage";
+import Typography from "@/components/Typography";
 
-export const metadata: Metadata = {
-  title: "404",
-};
+export default function Home() {
+  const [text, setText] = React.useState("Not Found");
 
-export default function NotFound() {
   return (
-    <main className="flex min-h-screen w-screen items-center justify-center bg-slate-200">
+    <main className="bg-[url('/images/bg.png')] w-screen h-screen flex flex-col items-center gap-2 md:gap-6 justify-center">
       <NextImage
-        src="/NotFound.png"
-        alt="404"
-        width={1920}
-        height={1080}
-        className="w-2/3 xl:w-1/2"
+        src="/Signify Logo White.png"
+        width={2000}
+        height={2000}
+        alt="Signify"
+        className="max-w-[50%] md:max-w-[20%]"
+        onMouseEnter={() => setText("404!")}
+        onMouseLeave={() => setText("Not Found")}
       />
+      <div className="w-max">
+        <Typography
+          variant="h1"
+          weight="bold"
+          className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-5 text-5xl text-white font-bold max-sm:text-[40px]"
+        >
+          {text}
+        </Typography>
+      </div>
     </main>
   );
 }

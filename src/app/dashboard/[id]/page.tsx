@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import Button from "@/components/buttons/Button";
@@ -13,10 +13,19 @@ import { AcceptModal } from "./modal/acceptModal";
 import { RejectModal } from "./modal/rejectModal";
 import { EditModal } from "./modal/editModal";
 import { useEffect, useState } from "react";
+import ModifyPage from "./modify/page";
 
 export default function TambahAjuan() {
   const path = usePathname();
   const pathId = path.split("/").pop();
+
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.push(
+      `/dashboard/modify?id=${data?.ID}&url=${encodeURIComponent(fileUrl)}`,
+    );
+  };
 
   const breadCrumbs = [
     { href: "/dashboard", Title: "Dashboard" },
@@ -190,6 +199,14 @@ export default function TambahAjuan() {
             </Button>
           )}
         </RejectModal>
+        <Button
+          variant="yellow"
+          size="base"
+          className="min-h-8 max-w-24 px-9 py-0.5"
+          onClick={handleNavigate}
+        >
+          Edit
+        </Button>
         <EditModal id={data?.ID} url={fileUrl}>
           {({ openModal }) => (
             <Button
