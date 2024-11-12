@@ -46,11 +46,14 @@ const SelectableInput: React.FC<SelectableInputProps> = ({
     },
   });
 
-  const filteredData = data?.filter(
-    (item: string) =>
-      item.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      item.toLowerCase() !== user?.username.toLowerCase(),
-  );
+  const filteredData = data
+    ?.filter(
+      (item: string) => item.toLowerCase() !== user?.username.toLowerCase(),
+    )
+    .filter(
+      (item: string) =>
+        !searchTerm || item.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
 
   useEffect(() => {
     setValue(id, selectedSize);
