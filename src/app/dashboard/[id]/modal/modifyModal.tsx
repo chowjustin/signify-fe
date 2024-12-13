@@ -49,12 +49,11 @@ export function ModifyModal({
   });
 
   const onSubmit = (formData: EditData) => {
-    const { confirmpassword, ...updatedData } = formData;
-    updatedData.id = data.id;
-    updatedData.x = data.x;
-    updatedData.y = data.y;
-    updatedData.w = data.w;
-    updateMutation.mutate(updatedData);
+    formData.id = data.id;
+    formData.x = data.x;
+    formData.y = data.y;
+    formData.w = data.w;
+    updateMutation.mutate(formData);
   };
 
   return (
@@ -94,21 +93,6 @@ export function ModifyModal({
                       value: 6,
                       message: "Password Minimal 6 Karakter",
                     },
-                  }}
-                />
-                <Input
-                  id="confirmpassword"
-                  type="password"
-                  label="Konfirmasi Password"
-                  placeholder="Konfirmasi Password"
-                  validation={{
-                    required: "Konfirmasi Password Harus Diisi",
-                    minLength: {
-                      value: 6,
-                      message: "Password Minimal 6 Karakter",
-                    },
-                    validate: (value, { password }) =>
-                      value === password || "Password Tidak Cocok",
                   }}
                 />
               </div>

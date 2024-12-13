@@ -17,7 +17,6 @@ type ModalReturnType = {
 type RejectData = {
   id: string;
   password: string;
-  confirmpassword?: string;
 };
 
 export function RejectModal({
@@ -54,9 +53,8 @@ export function RejectModal({
   });
 
   const onSubmit = (formData: RejectData) => {
-    const { confirmpassword, ...updatedData } = formData;
-    updatedData.id = id;
-    updateMutation.mutate(updatedData);
+    formData.id = id;
+    updateMutation.mutate(formData);
   };
 
   return (
@@ -96,21 +94,6 @@ export function RejectModal({
                       value: 6,
                       message: "Password Minimal 6 Karakter",
                     },
-                  }}
-                />
-                <Input
-                  id="confirmpassword"
-                  type="password"
-                  label="Konfirmasi Password"
-                  placeholder="Konfirmasi Password"
-                  validation={{
-                    required: "Konfirmasi Password Harus Diisi",
-                    minLength: {
-                      value: 6,
-                      message: "Password Minimal 6 Karakter",
-                    },
-                    validate: (value, { password }) =>
-                      value === password || "Password Tidak Cocok",
                   }}
                 />
               </div>

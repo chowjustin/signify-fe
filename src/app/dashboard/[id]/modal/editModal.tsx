@@ -24,7 +24,6 @@ export type EditData = {
   y: string;
   w: string;
   password: string;
-  confirmpassword?: string;
 };
 
 export function EditModal({
@@ -184,7 +183,6 @@ export function EditModal({
     y: "0",
     w: "0",
     password: "",
-    confirmpassword: undefined,
   });
 
   const onSubmit: SubmitHandler<EditData> = () => {
@@ -211,7 +209,6 @@ export function EditModal({
       y: scaledY.toFixed(0),
       w: scaledW.toFixed(0),
       password: "",
-      confirmpassword: "",
     };
 
     setModalData(preparedData);
