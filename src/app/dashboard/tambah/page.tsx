@@ -132,7 +132,7 @@ export default function TambahAjuan() {
 
     return (
       <div
-        id={`preview-page-${pageNumber}`}
+        id={`preview-page`}
         style={{
           position: "relative",
           display: "flex",
@@ -239,7 +239,8 @@ export default function TambahAjuan() {
       formData.append("document", data.document[0]);
     }
 
-    SignUpMutation(formData);
+    // SignUpMutation(formData);
+    console.log(formData);
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -250,9 +251,6 @@ export default function TambahAjuan() {
 
       setFileUrl(previewUrl);
       setIsFileDeleted(false);
-      setSelection(null);
-      setCurrentPage(1);
-      setTotalPages(0);
     } else {
       setFileUrl("");
       setIsFileDeleted(true);
