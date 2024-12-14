@@ -165,7 +165,7 @@ export function EditModal({
     const scaledW = selection.w * scaleX;
 
     const preparedData: EditData = {
-      id: data?.id,
+      id: data?.ID,
       x: scaledX.toFixed(0),
       y: scaledY.toFixed(0),
       w: scaledW.toFixed(0),
