@@ -13,6 +13,8 @@ import Modal from "@/components/modal/Modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { ModifyModal } from "./modifyModal";
 import Input from "@/components/form/Input";
+import useAuthStore from "@/app/stores/useAuthStore";
+import { DraggableOverlay } from "./draggableOverlay";
 
 type ModalReturnType = {
   openModal: () => void;
@@ -28,11 +30,12 @@ export type EditData = {
 
 export function EditModal({
   children,
-  id,
+  data,
   url,
 }: {
   children: (props: ModalReturnType) => JSX.Element;
-  id: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  data: any;
   url: string;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -41,6 +44,7 @@ export function EditModal({
   };
   const methods = useForm<EditData>({ mode: "onChange" });
   const { reset, handleSubmit } = methods;
+  const { user } = useAuthStore();
 
   const [selection, setSelection] = useState<{
     x: number;
@@ -48,11 +52,8 @@ export function EditModal({
     w: number;
     height: number;
   } | null>(null);
-  const [startPoint, setStartPoint] = useState<{ x: number; y: number } | null>(
-    null,
-  );
+
   const [isMdScreen, setIsMdScreen] = useState(false);
-  const animationFrameId = useRef<number | null>(null);
   const [screenSize, setScreenSize] = useState(1440);
 
   useEffect(() => {
@@ -68,114 +69,8 @@ export function EditModal({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleMouseDown = (e: React.MouseEvent, page: HTMLElement) => {
-    const rect = page.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setStartPoint({ x, y });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent, page: HTMLElement) => {
-    if (startPoint) {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-
-      animationFrameId.current = requestAnimationFrame(() => {
-        const rect = page.getBoundingClientRect();
-        const currentX = e.clientX - rect.left;
-        const currentY = e.clientY - rect.top;
-
-        const w = currentX - startPoint.x;
-        const height = currentY - startPoint.y;
-
-        setSelection({
-          x: startPoint.x,
-          y: startPoint.y,
-          w,
-          height,
-        });
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setStartPoint(null);
-    if (animationFrameId.current) {
-      cancelAnimationFrame(animationFrameId.current);
-      animationFrameId.current = null;
-    }
-  };
-
   const [width, setWidth] = useState(60);
   const [height, setHeight] = useState(35);
-
-  const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
-    const rect = page.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setSelection({ x, y, w: width, height: height });
-  };
-
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const renderPage = (props: any) => (
-    <div
-      id="preview-page"
-      style={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        cursor: isMdScreen ? "crosshair" : "default",
-        zIndex: 100,
-      }}
-      onMouseDown={
-        isMdScreen ? (e) => handleMouseDown(e, e.currentTarget) : undefined
-      }
-      onMouseMove={
-        isMdScreen ? (e) => handleMouseMove(e, e.currentTarget) : undefined
-      }
-      onMouseUp={isMdScreen ? handleMouseUp : undefined}
-      onClick={
-        !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
-      }
-    >
-      {props.canvasLayer.children}
-      {isMdScreen && selection && (
-        <div
-          style={{
-            position: "absolute",
-            left: selection.x,
-            top: selection.y,
-            width: selection.w,
-            height: selection.height,
-            border: "2px dashed blue",
-            backgroundColor: "rgba(0, 0, 255, 0.1)",
-            pointerEvents: "none",
-          }}
-        />
-      )}
-      {!isMdScreen && selection && (
-        <div
-          style={{
-            position: "absolute",
-            left: selection.x,
-            top: selection.y,
-            width: selection.w,
-            height: selection.height,
-            border: "2px dashed red",
-            backgroundColor: "rgba(255, 0, 0, 0.1)",
-            pointerEvents: "none",
-          }}
-        />
-      )}
-    </div>
-  );
 
   const [modalData, setModalData] = useState<EditData>({
     id: "",
@@ -184,6 +79,72 @@ export function EditModal({
     w: "0",
     password: "",
   });
+  const pageContainerRef = useRef<HTMLDivElement>(null);
+
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const renderPage = (props: any) => (
+    <div
+      id="preview-page-modal"
+      ref={pageContainerRef}
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        cursor: "default",
+        zIndex: 100,
+      }}
+    >
+      {props.canvasLayer.children}
+
+      {user?.ttd && (
+        <DraggableOverlay
+          src={user.ttd}
+          initialPosition={{
+            x: data?.Position.x / (595 / 224) + 2,
+            y: data?.Position.y / (842 / 316) + 4,
+          }}
+          initialSize={{
+            width: data?.Position.w / (595 / 224),
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            height: "auto" as any,
+          }}
+          containerRef={pageContainerRef}
+          onPositionChange={(pos) => {
+            const page = pageContainerRef.current;
+            if (!page) return;
+
+            const rect = page.getBoundingClientRect();
+
+            const scaleX = 595 / (screenSize >= 490 ? 227 : rect.width);
+            const scaleY = 842 / (screenSize >= 490 ? 322 : rect.height);
+
+            const scaledX = pos.x * scaleX;
+            const scaledY = pos.y * scaleY;
+            const scaledW = pos.width * scaleX;
+
+            setSelection({
+              x: pos.x,
+              y: pos.y,
+              w: pos.width,
+              // height: pos.height || 0,
+              height: 50,
+            });
+
+            setModalData((prev) => ({
+              ...prev,
+              x: scaledX.toFixed(0),
+              y: scaledY.toFixed(0),
+              w: scaledW.toFixed(0),
+            }));
+          }}
+        />
+      )}
+    </div>
+  );
 
   const onSubmit: SubmitHandler<EditData> = () => {
     if (!selection) {
@@ -191,7 +152,7 @@ export function EditModal({
       return;
     }
 
-    const page = document.getElementById("preview-page");
+    const page = document.getElementById("preview-page-modal");
     if (!page) return;
 
     const rect = page.getBoundingClientRect();
@@ -204,7 +165,7 @@ export function EditModal({
     const scaledW = selection.w * scaleX;
 
     const preparedData: EditData = {
-      id: id,
+      id: data?.id,
       x: scaledX.toFixed(0),
       y: scaledY.toFixed(0),
       w: scaledW.toFixed(0),
@@ -285,8 +246,7 @@ export function EditModal({
               <div className="mt-4 text-gray-700">
                 <LabelText>
                   Selected Coordinates: X: {selection?.x.toFixed(2)}, Y:{" "}
-                  {selection?.y.toFixed(2)},{" "}
-                  {isMdScreen && <>Width: {selection?.w.toFixed(2)}</>}
+                  {selection?.y.toFixed(2)}, Width: {selection?.w.toFixed(2)}
                 </LabelText>
               </div>
             </form>

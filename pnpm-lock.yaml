@@ -29,6 +29,9 @@ importers:
       '@react-pdf-viewer/default-layout':
         specifier: ^3.12.0
         version: 3.12.0(pdfjs-dist@3.11.174)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@react-pdf-viewer/page-navigation':
+        specifier: ^3.12.0
+        version: 3.12.0(pdfjs-dist@3.11.174)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tanstack/react-query':
         specifier: ^5.32.0
         version: 5.32.0(react@18.2.0)
@@ -83,6 +86,9 @@ importers:
       react-icons:
         specifier: ^5.1.0
         version: 5.1.0(react@18.2.0)
+      react-rnd:
+        specifier: ^10.4.13
+        version: 10.4.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-select:
         specifier: ^5.8.2
         version: 5.8.2(@types/react@18.2.78)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -3278,10 +3284,22 @@ packages:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
 
+  re-resizable@6.10.0:
+    resolution: {integrity: sha512-hysSK0xmA5nz24HBVztlk4yCqCLCvS32E6ZpWxVKop9x3tqCa4yAj1++facrmkOf62JsJHjmjABdKxXofYioCw==}
+    peerDependencies:
+      react: ^16.13.1 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+
   react-dom@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
       react: ^18.2.0
+
+  react-draggable@4.4.6:
+    resolution: {integrity: sha512-LtY5Xw1zTPqHkVmtM3X8MUOxNDOUhv/khTgBgrUvwaS064bwVvxT+q5El0uUFNx5IEPKXuRejr7UqLwBIg5pdw==}
+    peerDependencies:
+      react: '>= 16.3.0'
+      react-dom: '>= 16.3.0'
 
   react-dropzone@14.3.5:
     resolution: {integrity: sha512-9nDUaEEpqZLOz5v5SUcFA0CjM4vq8YbqO0WRls+EYT7+DvxUdzDPKNCPLqGfj3YL9MsniCLCD4RFA6M95V6KMQ==}
@@ -3329,6 +3347,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-rnd@10.4.13:
+    resolution: {integrity: sha512-Vgbf0iihspcQ6nkaFhpOGWfmnuVbhkhoB0hBbYl8aRDA4horsQHESc4E1z7O/P27kFFjK2aqM0u5CGzfr9gEZA==}
+    peerDependencies:
+      react: '>=16.3.0'
+      react-dom: '>=16.3.0'
 
   react-select@5.8.2:
     resolution: {integrity: sha512-a/LkOckoI62710gGPQSQqUp7A10fGbH/ya3/IR49qaq3XoBvwymgD5mJgtiHxBDsutyEQfdKNycWVh8Cg8UCjw==}
@@ -7879,11 +7903,23 @@ snapshots:
 
   quick-lru@4.0.1: {}
 
+  re-resizable@6.10.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
   react-dom@18.2.0(react@18.2.0):
     dependencies:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+
+  react-draggable@4.4.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      clsx: 1.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   react-dropzone@14.3.5(react@18.2.0):
     dependencies:
@@ -7928,6 +7964,14 @@ snapshots:
       use-sidecar: 1.1.2(@types/react@18.2.78)(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.78
+
+  react-rnd@10.4.13(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      re-resizable: 6.10.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-draggable: 4.4.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      tslib: 2.6.2
 
   react-select@5.8.2(@types/react@18.2.78)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
