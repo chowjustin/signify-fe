@@ -13,8 +13,10 @@ import { AcceptModal } from "./modal/acceptModal";
 import { RejectModal } from "./modal/rejectModal";
 import { EditModal } from "./modal/editModal";
 import { useEffect, useState } from "react";
+import withAuth from "@/components/hoc/withAuth";
 
-export default function TambahAjuan() {
+export default withAuth(DetailAjuan, "user");
+function DetailAjuan() {
   const path = usePathname();
   const pathId = path.split("/").pop();
 
@@ -190,7 +192,7 @@ export default function TambahAjuan() {
             </Button>
           )}
         </RejectModal>
-        <EditModal id={data?.ID} url={fileUrl}>
+        <EditModal data={data} url={fileUrl}>
           {({ openModal }) => (
             <Button
               variant="yellow"
