@@ -411,7 +411,7 @@ export default function TambahAjuan() {
                 workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
               >
                 <Viewer
-                  key={`${fileUrl}-${currentPage}`} // Add currentPage to the key to force re-render
+                  // key={`${fileUrl}-${currentPage}`} // Add currentPage to the key to force re-render
                   fileUrl={fileUrl}
                   defaultScale={SpecialZoomLevel.PageFit}
                   renderPage={renderPage}
