@@ -16,7 +16,6 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 import TextArea from "@/components/form/TextArea";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
-import { pageNavigationPlugin } from "@react-pdf-viewer/page-navigation";
 import { useEffect, useRef, useState } from "react";
 import useFileStore from "@/app/stores/useFileStore";
 
@@ -26,7 +25,6 @@ type SignUpRequest = {
   cover_letter: string;
   x: string;
   y: string;
-  page: number;
   document: FileList | null;
 };
 
@@ -45,21 +43,12 @@ export default function TambahAjuan() {
     y: number;
     w: number;
     height: number;
-    page: number;
   } | null>(null);
   const [startPoint, setStartPoint] = useState<{ x: number; y: number } | null>(
     null,
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [isMdScreen, setIsMdScreen] = useState(false);
   const animationFrameId = useRef<number | null>(null);
-
-  const [fileUrl, setFileUrl] = useState<string>("");
-  const { isFileDeleted, setIsFileDeleted } = useFileStore();
-
-  const pageNavigationPluginInstance = pageNavigationPlugin();
-  const { GoToNextPage, GoToPreviousPage } = pageNavigationPluginInstance;
 
   useEffect(() => {
     const handleResize = () => {
@@ -99,7 +88,6 @@ export default function TambahAjuan() {
           y: startPoint.y,
           w,
           height,
-          page: currentPage,
         });
       });
     }
@@ -121,72 +109,66 @@ export default function TambahAjuan() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setSelection({ x, y, w: width, height: height, page: currentPage });
+    setSelection({ x, y, w: width, height: height });
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const renderPage = (props: any) => {
-    // const pageIndex = props.pageIndex + 1;
-    const { pageIndex } = props;
-    const pageNumber = pageIndex + 1;
-
-    return (
-      <div
-        id={`preview-page-${pageNumber}`}
-        style={{
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "100%",
-          overflow: "hidden",
-          cursor: isMdScreen ? "crosshair" : "default",
-          zIndex: 100,
-        }}
-        onMouseDown={
-          isMdScreen ? (e) => handleMouseDown(e, e.currentTarget) : undefined
-        }
-        onMouseMove={
-          isMdScreen ? (e) => handleMouseMove(e, e.currentTarget) : undefined
-        }
-        onMouseUp={isMdScreen ? handleMouseUp : undefined}
-        onClick={
-          !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
-        }
-      >
-        {props.canvasLayer.children}
-        {isMdScreen && selection && selection.page === pageNumber && (
-          <div
-            style={{
-              position: "absolute",
-              left: selection.x,
-              top: selection.y,
-              width: selection.w,
-              height: selection.height,
-              border: "2px dashed blue",
-              backgroundColor: "rgba(0, 0, 255, 0.1)",
-              pointerEvents: "none",
-            }}
-          />
-        )}
-        {!isMdScreen && selection && selection.page === pageNumber && (
-          <div
-            style={{
-              position: "absolute",
-              left: selection.x,
-              top: selection.y,
-              width: selection.w,
-              height: selection.height,
-              border: "2px dashed red",
-              backgroundColor: "rgba(255, 0, 0, 0.1)",
-              pointerEvents: "none",
-            }}
-          />
-        )}
-      </div>
-    );
-  };
+  const renderPage = (props: any) => (
+    <div
+      id="preview-page"
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        cursor: isMdScreen ? "crosshair" : "default",
+        zIndex: 100,
+      }}
+      onMouseDown={
+        isMdScreen ? (e) => handleMouseDown(e, e.currentTarget) : undefined
+      }
+      onMouseMove={
+        isMdScreen ? (e) => handleMouseMove(e, e.currentTarget) : undefined
+      }
+      onMouseUp={isMdScreen ? handleMouseUp : undefined}
+      onClick={
+        !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
+      }
+    >
+      {props.canvasLayer.children}
+      {isMdScreen && selection && (
+        <div
+          style={{
+            position: "absolute",
+            left: selection.x,
+            top: selection.y,
+            width: selection.w,
+            height: selection.height,
+            border: "2px dashed blue",
+            backgroundColor: "rgba(0, 0, 255, 0.1)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {!isMdScreen && selection && (
+        <div
+          style={{
+            position: "absolute",
+            left: selection.x,
+            top: selection.y,
+            width: selection.w,
+            height: selection.height,
+            border: "2px dashed red",
+            backgroundColor: "rgba(255, 0, 0, 0.1)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+    </div>
+  );
 
   const { mutate: SignUpMutation, isPending } = useMutation<
     AxiosResponse,
@@ -233,7 +215,6 @@ export default function TambahAjuan() {
     formData.append("x", scaledX.toFixed(0));
     formData.append("y", scaledY.toFixed(0));
     formData.append("w", scaledW.toFixed(0));
-    formData.append("page", selection.page.toString());
 
     if (data.document && data.document[0]) {
       formData.append("document", data.document[0]);
@@ -242,27 +223,19 @@ export default function TambahAjuan() {
     SignUpMutation(formData);
   };
 
+  const { isFileDeleted, setIsFileDeleted } = useFileStore();
+
+  const [fileUrl, setFileUrl] = useState<string>("");
+
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const handleFileUpload = (files: any) => {
     if (files.length > 0) {
-      const file = files[0];
-      const previewUrl = URL.createObjectURL(file);
-
-      setFileUrl(previewUrl);
+      setFileUrl(files[0].preview);
       setIsFileDeleted(false);
-      setSelection(null);
-      setCurrentPage(1);
-      setTotalPages(0);
     } else {
       setFileUrl("");
       setIsFileDeleted(true);
     }
-  };
-
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const handlePageChange = (e: any) => {
-    setCurrentPage(e.currentPage + 1);
-    setTotalPages(e.doc.numPages);
   };
 
   useEffect(() => {
@@ -313,7 +286,7 @@ export default function TambahAjuan() {
                   <UploadFile
                     label="Upload Surat"
                     id="document"
-                    maxSize={5000000}
+                    maxSize={2000000}
                     accept={{
                       "application/pdf": [".pdf"],
                     }}
@@ -350,7 +323,6 @@ export default function TambahAjuan() {
                   </div>
                   <span className="max-md:hidden">on the Preview</span>
                 </LabelText>
-
                 <div className="w-full md:hidden h-[45vh] bg-gray-100 mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
                   {fileUrl ? (
                     <Worker
@@ -374,8 +346,7 @@ export default function TambahAjuan() {
                   <LabelText>
                     Selected Coordinates: X: {selection?.x.toFixed(2)}, Y:{" "}
                     {selection?.y.toFixed(2)},{" "}
-                    {isMdScreen && <>Width: {selection?.w.toFixed(2)}</>}, Page:
-                    {selection && <>{selection.page}</>}
+                    {isMdScreen && <>Width: {selection?.w.toFixed(2)}</>}
                   </LabelText>
                 </div>
 
@@ -404,61 +375,19 @@ export default function TambahAjuan() {
           </FormProvider>
         </div>
         {/* File Preview */}
-        <div className="w-[50%] flex flex-col">
-          <div className="max-md:hidden max-md:h-full bg-gray-100 h-[75vh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
-            {fileUrl ? (
-              <Worker
-                workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
-              >
-                <Viewer
-                  // key={`${fileUrl}-${currentPage}`} // Add currentPage to the key to force re-render
-                  fileUrl={fileUrl}
-                  defaultScale={SpecialZoomLevel.PageFit}
-                  renderPage={renderPage}
-                  plugins={[pageNavigationPluginInstance]}
-                  onPageChange={handlePageChange}
-                  initialPage={currentPage - 1} // Load only the current page
-                  onDocumentLoad={(e) => {
-                    setTotalPages(e.doc.numPages || 0);
-                  }}
-                />
-              </Worker>
-            ) : (
-              <p className="text-center text-gray-500">File not uploaded</p>
-            )}
-          </div>
-          {fileUrl && (
-            <div className="flex items-center w-full justify-between mt-4">
-              <GoToPreviousPage>
-                {(props) => (
-                  <Button
-                    variant="primary"
-                    onClick={props.onClick}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </Button>
-                )}
-              </GoToPreviousPage>
-
-              <div className="text-center">
-                <p>
-                  Page {currentPage} of {totalPages}
-                </p>
-              </div>
-
-              <GoToNextPage>
-                {(props) => (
-                  <Button
-                    variant="primary"
-                    onClick={props.onClick}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </Button>
-                )}
-              </GoToNextPage>
-            </div>
+        <div className="w-[50%] max-md:hidden max-md:h-full bg-gray-100 h-[80vh] mt-6 p-4 border-3 border-primary border-dashed rounded-lg overflow-auto">
+          {fileUrl ? (
+            <Worker
+              workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
+            >
+              <Viewer
+                fileUrl={fileUrl}
+                defaultScale={SpecialZoomLevel.PageFit}
+                renderPage={renderPage}
+              />
+            </Worker>
+          ) : (
+            <p className="text-center text-gray-500">File not uploaded</p>
           )}
         </div>
       </div>
