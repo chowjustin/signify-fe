@@ -81,6 +81,14 @@ export function EditModal({
   });
   const pageContainerRef = useRef<HTMLDivElement>(null);
 
+  const handlePageClick = (e: React.MouseEvent, page: HTMLElement) => {
+    const rect = page.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setSelection({ x, y, w: width, height: height });
+  };
+
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const renderPage = (props: any) => (
     <div
@@ -97,10 +105,13 @@ export function EditModal({
         cursor: "default",
         zIndex: 100,
       }}
+      onClick={
+        !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
+      }
     >
       {props.canvasLayer.children}
 
-      {user?.ttd && (
+      {isMdScreen && user?.ttd && (
         <DraggableOverlay
           src={user.ttd}
           initialPosition={{
@@ -142,6 +153,26 @@ export function EditModal({
             }));
           }}
         />
+      )}
+
+      {!isMdScreen && selection && user?.ttd && (
+        <div
+          style={{
+            position: "absolute",
+            left: selection.x,
+            top: selection.y,
+            width: selection.w,
+            pointerEvents: "none",
+          }}
+        >
+          <img
+            src={user.ttd}
+            alt="ttd"
+            style={{
+              width: "100%",
+            }}
+          />
+        </div>
       )}
     </div>
   );
@@ -212,16 +243,6 @@ export function EditModal({
                       type="number"
                       value={width}
                       onChange={(e) => setWidth(parseInt(e.target.value))}
-                      className="px-2 py-1"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1 w-[50%]">
-                    Height:
-                    <Input
-                      id="height"
-                      type="number"
-                      value={height}
-                      onChange={(e) => setHeight(parseInt(e.target.value))}
                       className="px-2 py-1"
                     />
                   </div>
