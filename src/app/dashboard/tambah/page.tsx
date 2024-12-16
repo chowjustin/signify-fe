@@ -15,19 +15,31 @@ import NextImage from "@/components/NextImage";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import TextArea from "@/components/form/TextArea";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-import { Worker, Viewer, SpecialZoomLevel } from "@react-pdf-viewer/core";
+import {
+  Worker,
+  Viewer,
+  SpecialZoomLevel,
+  DocumentLoadEvent,
+} from "@react-pdf-viewer/core";
 import { pageNavigationPlugin } from "@react-pdf-viewer/page-navigation";
 import { useEffect, useRef, useState } from "react";
 import useFileStore from "@/app/stores/useFileStore";
+import React from "react";
+
+type AreaSelection = {
+  page: number;
+  x: number;
+  y: number;
+  w: number;
+  height: number;
+};
 
 type SignUpRequest = {
   recipient: string;
   topic: string;
   cover_letter: string;
-  x: string;
-  y: string;
-  page: number;
   document: FileList | null;
+  positions?: AreaSelection[];
 };
 
 const breadCrumbs = [
@@ -40,13 +52,9 @@ export default function TambahAjuan() {
   const { handleSubmit } = methods;
   const router = useRouter();
 
-  const [selection, setSelection] = useState<{
-    x: number;
-    y: number;
-    w: number;
-    height: number;
-    page: number;
-  } | null>(null);
+  const [selections, setSelections] = useState<AreaSelection[]>([]);
+  const [currentSelections, setCurrentSelections] =
+    useState<AreaSelection | null>(null);
   const [startPoint, setStartPoint] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -78,6 +86,7 @@ export default function TambahAjuan() {
     const y = e.clientY - rect.top;
 
     setStartPoint({ x, y });
+    setCurrentSelections(null);
   };
 
   const handleMouseMove = (e: React.MouseEvent, page: HTMLElement) => {
@@ -94,7 +103,7 @@ export default function TambahAjuan() {
         const w = currentX - startPoint.x;
         const height = currentY - startPoint.y;
 
-        setSelection({
+        setCurrentSelections({
           x: startPoint.x,
           y: startPoint.y,
           w,
@@ -106,11 +115,19 @@ export default function TambahAjuan() {
   };
 
   const handleMouseUp = () => {
+    if (currentSelections) {
+      setSelections((prev) => [...prev, currentSelections]);
+    }
+
     setStartPoint(null);
     if (animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
       animationFrameId.current = null;
     }
+  };
+
+  const removeSelection = (index: number) => {
+    setSelections((prev) => prev.filter((_, i) => i !== index));
   };
 
   const [width, setWidth] = useState(60);
@@ -121,12 +138,19 @@ export default function TambahAjuan() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setSelection({ x, y, w: width, height: height, page: currentPage });
+    const newSelection: AreaSelection = {
+      x,
+      y,
+      w: width,
+      height: height,
+      page: currentPage,
+    };
+
+    setSelections((prev) => [...prev, newSelection]);
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const renderPage = (props: any) => {
-    // const pageIndex = props.pageIndex + 1;
     const { pageIndex } = props;
     const pageNumber = pageIndex + 1;
 
@@ -156,34 +180,58 @@ export default function TambahAjuan() {
         }
       >
         {props.canvasLayer.children}
-        {isMdScreen && selection && selection.page === pageNumber && (
-          <div
-            style={{
-              position: "absolute",
-              left: selection.x,
-              top: selection.y,
-              width: selection.w,
-              height: selection.height,
-              border: "2px dashed blue",
-              backgroundColor: "rgba(0, 0, 255, 0.1)",
-              pointerEvents: "none",
-            }}
-          />
+        {selections.map(
+          (selection, index) =>
+            selection.page === pageNumber && (
+              <div
+                key={index}
+                style={{
+                  position: "absolute",
+                  left: selection.x,
+                  top: selection.y,
+                  width: selection.w,
+                  height: selection.height,
+                  border: "2px dashed green",
+                  backgroundColor: "rgba(0, 255, 0, 0.1)",
+                  pointerEvents: "none",
+                }}
+              />
+            ),
         )}
-        {!isMdScreen && selection && selection.page === pageNumber && (
-          <div
-            style={{
-              position: "absolute",
-              left: selection.x,
-              top: selection.y,
-              width: selection.w,
-              height: selection.height,
-              border: "2px dashed red",
-              backgroundColor: "rgba(255, 0, 0, 0.1)",
-              pointerEvents: "none",
-            }}
-          />
-        )}
+
+        {isMdScreen &&
+          currentSelections &&
+          currentSelections.page === pageNumber &&
+          selections.length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                left: currentSelections.x,
+                top: currentSelections.y,
+                width: currentSelections.w,
+                height: currentSelections.height,
+                border: "2px dashed blue",
+                backgroundColor: "rgba(0, 0, 255, 0.1)",
+                pointerEvents: "none",
+              }}
+            />
+          )}
+        {!isMdScreen &&
+          currentSelections &&
+          currentSelections.page === pageNumber && (
+            <div
+              style={{
+                position: "absolute",
+                left: currentSelections.x,
+                top: currentSelections.y,
+                width: currentSelections.w,
+                height: currentSelections.height,
+                border: "2px dashed red",
+                backgroundColor: "rgba(255, 0, 0, 0.1)",
+                pointerEvents: "none",
+              }}
+            />
+          )}
       </div>
     );
   };
@@ -208,8 +256,8 @@ export default function TambahAjuan() {
   });
 
   const onSubmit: SubmitHandler<SignUpRequest> = (data) => {
-    if (!selection) {
-      toast.error("Please select coordinates on the preview");
+    if (selections.length === 0) {
+      toast.error("Please select at least one area on the preview");
       return;
     }
 
@@ -221,26 +269,26 @@ export default function TambahAjuan() {
     const scaleX = 595 / rect.width;
     const scaleY = 842 / rect.height;
 
-    const scaledX = selection.x * scaleX;
-    const scaledY = selection.y * scaleY;
-    const scaledW = selection.w * scaleX;
+    const scaledSelections = selections.map((selection) => ({
+      page: selection.page,
+      x: (selection.x * scaleX).toFixed(0),
+      y: (selection.y * scaleY).toFixed(0),
+      w: (selection.w * scaleX).toFixed(0),
+      // height: (selection.height * scaleY).toFixed(0),
+    }));
 
     const formData = new FormData();
     formData.append("recipient", data.recipient);
     formData.append("topic", data.topic);
     formData.append("cover_letter", data.cover_letter);
 
-    formData.append("x", scaledX.toFixed(0));
-    formData.append("y", scaledY.toFixed(0));
-    formData.append("w", scaledW.toFixed(0));
-    formData.append("page", selection.page.toString());
+    formData.append("positions", JSON.stringify(scaledSelections));
 
     if (data.document && data.document[0]) {
       formData.append("document", data.document[0]);
     }
 
-    // SignUpMutation(formData);
-    console.log(formData);
+    SignUpMutation(formData);
   };
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -261,6 +309,13 @@ export default function TambahAjuan() {
   const handlePageChange = (e: any) => {
     setCurrentPage(e.currentPage + 1);
     setTotalPages(e.doc.numPages);
+  };
+
+  const [isPdfLoaded, setIsPdfLoaded] = useState(false);
+
+  const handleDocumentLoad = (e: DocumentLoadEvent) => {
+    setTotalPages(e.doc.numPages || 0);
+    setIsPdfLoaded(true);
   };
 
   useEffect(() => {
@@ -355,10 +410,12 @@ export default function TambahAjuan() {
                       workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
                     >
                       <Viewer
-                        key={fileUrl}
                         fileUrl={fileUrl}
                         defaultScale={SpecialZoomLevel.PageFit}
-                        renderPage={renderPage}
+                        renderPage={isPdfLoaded ? renderPage : undefined}
+                        plugins={[pageNavigationPluginInstance]}
+                        onPageChange={handlePageChange}
+                        onDocumentLoad={handleDocumentLoad}
                       />
                     </Worker>
                   ) : (
@@ -369,12 +426,26 @@ export default function TambahAjuan() {
                 </div>
 
                 <div className="mt-4 text-gray-700">
-                  <LabelText>
-                    Selected Coordinates: X: {selection?.x.toFixed(2)}, Y:{" "}
-                    {selection?.y.toFixed(2)},{" "}
-                    {isMdScreen && <>Width: {selection?.w.toFixed(2)}</>}, Page:
-                    {selection && <>{selection.page}</>}
-                  </LabelText>
+                  <LabelText>Selected Areas:</LabelText>
+                  {selections.map((selection, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center mb-2 p-2 bg-gray-100 rounded"
+                    >
+                      <span>
+                        Page: {selection.page}, X: {selection.x.toFixed(2)}, Y:{" "}
+                        {selection.y.toFixed(2)}, Width:{" "}
+                        {selection.w.toFixed(2)}
+                      </span>
+                      <Button
+                        variant="red"
+                        size="sm"
+                        onClick={() => removeSelection(index)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
                 </div>
 
                 <TextArea
@@ -409,23 +480,19 @@ export default function TambahAjuan() {
                 workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
               >
                 <Viewer
-                  // key={`${fileUrl}-${currentPage}`} // Add currentPage to the key to force re-render
                   fileUrl={fileUrl}
                   defaultScale={SpecialZoomLevel.PageFit}
-                  renderPage={renderPage}
+                  renderPage={isPdfLoaded ? renderPage : undefined}
                   plugins={[pageNavigationPluginInstance]}
                   onPageChange={handlePageChange}
-                  initialPage={currentPage - 1} // Load only the current page
-                  onDocumentLoad={(e) => {
-                    setTotalPages(e.doc.numPages || 0);
-                  }}
+                  onDocumentLoad={handleDocumentLoad}
                 />
               </Worker>
             ) : (
               <p className="text-center text-gray-500">File not uploaded</p>
             )}
           </div>
-          {fileUrl && (
+          {fileUrl && isMdScreen && (
             <div className="flex items-center w-full justify-between mt-4">
               <GoToPreviousPage>
                 {(props) => (
