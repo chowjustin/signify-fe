@@ -36,6 +36,7 @@ export function EditModal({
   children: (props: ModalReturnType) => JSX.Element;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data: any;
+
   url: string;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
