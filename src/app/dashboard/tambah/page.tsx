@@ -282,7 +282,9 @@ export default function TambahAjuan() {
     formData.append("topic", data.topic);
     formData.append("cover_letter", data.cover_letter);
 
-    formData.append("positions", JSON.stringify(scaledSelections));
+    scaledSelections.forEach((selection, index) => {
+      formData.append(`positions[${index}]`, JSON.stringify(selection));
+    });
 
     if (data.document && data.document[0]) {
       formData.append("document", data.document[0]);
