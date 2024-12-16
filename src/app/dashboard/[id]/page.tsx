@@ -14,6 +14,7 @@ import { RejectModal } from "./modal/rejectModal";
 import { EditModal } from "./modal/editModal";
 import { useEffect, useState } from "react";
 import withAuth from "@/components/hoc/withAuth";
+import useAuthStore from "@/app/stores/useAuthStore";
 
 type AreaSelection = {
   page: number;
@@ -32,6 +33,8 @@ function DetailAjuan() {
     { href: "/dashboard", Title: "Dashboard" },
     { href: `/dashboard/${pathId}`, Title: "Detail" },
   ];
+
+  const { user } = useAuthStore();
 
   const { data } = useQuery({
     queryKey: ["detail", pathId],
@@ -71,9 +74,10 @@ function DetailAjuan() {
         {props.canvasLayer.children}
         {scaledSelections.map(
           (selection: AreaSelection, index: number) =>
-            selection.page === pageNumber && (
+            selection.page === pageNumber &&
+            (isSender && user?.ttd ? (
               <div
-                className={`${isSender && !isAccepted ? "flex" : "hidden"}`}
+                className={`${!isAccepted ? "flex" : "hidden"}`}
                 key={index}
                 style={{
                   position: "absolute",
@@ -86,7 +90,27 @@ function DetailAjuan() {
                   pointerEvents: "none",
                 }}
               />
-            ),
+            ) : (
+              <div
+                className={`${!isAccepted ? "flex" : "hidden"}`}
+                key={index}
+                style={{
+                  position: "absolute",
+                  left: selection.x,
+                  top: selection.y,
+                  width: selection.w,
+                  pointerEvents: "none",
+                }}
+              >
+                <img
+                  src={user?.ttd}
+                  alt="ttd"
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              </div>
+            )),
         )}
       </div>
     );
@@ -208,7 +232,7 @@ function DetailAjuan() {
             </Button>
           )}
         </RejectModal>
-        <EditModal data={data} url={fileUrl}>
+        <EditModal data={scaledSelections} url={fileUrl}>
           {({ openModal }) => (
             <Button
               variant="yellow"
