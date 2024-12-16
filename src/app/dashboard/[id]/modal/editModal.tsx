@@ -28,22 +28,36 @@ export type EditData = {
   password: string;
 };
 
+export type ModifyRequest = {
+  id: string;
+  positions: AreaSelection[];
+  password: string;
+};
+
+type AreaSelection = {
+  page: number;
+  x: number;
+  y: number;
+  w: number;
+};
+
 export function EditModal({
   children,
   data,
   url,
+  id,
 }: {
   children: (props: ModalReturnType) => JSX.Element;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data: any;
-
+  id: string;
   url: string;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const modalReturn: ModalReturnType = {
     openModal: onOpen,
   };
-  const methods = useForm<EditData>({ mode: "onChange" });
+  const methods = useForm<ModifyRequest>({ mode: "onChange" });
   const { reset, handleSubmit } = methods;
   const { user } = useAuthStore();
 
@@ -73,11 +87,9 @@ export function EditModal({
   const [width, setWidth] = useState(60);
   const [height, setHeight] = useState(35);
 
-  const [modalData, setModalData] = useState<EditData>({
+  const [modalData, setModalData] = useState<ModifyRequest>({
     id: "",
-    x: "0",
-    y: "0",
-    w: "0",
+    positions: [],
     password: "",
   });
   const pageContainerRef = useRef<HTMLDivElement>(null);
@@ -90,117 +102,185 @@ export function EditModal({
     setSelection({ x, y, w: width, height: height });
   };
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const renderPage = (props: any) => (
-    <div
-      id="preview-page-modal"
-      ref={pageContainerRef}
-      style={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        cursor: "default",
-        zIndex: 100,
-      }}
-      onClick={
-        !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
-      }
-    >
-      {props.canvasLayer.children}
+  const [initialPositions, setInitialPositions] = useState<
+    Array<{
+      page: number;
+      x: number;
+      y: number;
+      w: number;
+    }>
+  >([]);
 
-      {isMdScreen && user?.ttd && (
-        <DraggableOverlay
-          src={user.ttd}
-          initialPosition={{
-            x: data?.Position.x / (595 / 224) + 2,
-            y: data?.Position.y / (842 / 316) + 4,
-          }}
-          initialSize={{
-            width: data?.Position.w / (595 / 224),
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            height: "auto" as any,
-          }}
-          containerRef={pageContainerRef}
-          onPositionChange={(pos) => {
-            const page = pageContainerRef.current;
-            if (!page) return;
-
-            const rect = page.getBoundingClientRect();
-
-            const scaleX = 595 / (screenSize >= 490 ? 227 : rect.width);
-            const scaleY = 842 / (screenSize >= 490 ? 322 : rect.height);
-
-            const scaledX = pos.x * scaleX;
-            const scaledY = pos.y * scaleY;
-            const scaledW = pos.width * scaleX;
-
-            setSelection({
-              x: pos.x,
-              y: pos.y,
-              w: pos.width,
-              // height: pos.height || 0,
-              height: 50,
-            });
-
-            setModalData((prev) => ({
-              ...prev,
-              x: scaledX.toFixed(0),
-              y: scaledY.toFixed(0),
-              w: scaledW.toFixed(0),
-            }));
-          }}
-        />
-      )}
-
-      {!isMdScreen && selection && user?.ttd && (
-        <div
-          style={{
-            position: "absolute",
-            left: selection.x,
-            top: selection.y,
-            width: selection.w,
-            pointerEvents: "none",
-          }}
-        >
-          <img
-            src={user.ttd}
-            alt="ttd"
-            style={{
-              width: "100%",
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-
-  const onSubmit: SubmitHandler<EditData> = () => {
-    if (!selection) {
-      toast.error("Please select coordinates on the preview");
-      return;
+  useEffect(() => {
+    // Initialize initial positions when data loads
+    if (data) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      const initialPosition = data.map((position: any) => ({
+        page: position.page,
+        x: position.x,
+        y: position.y,
+        w: position.w,
+      }));
+      setInitialPositions(initialPosition);
     }
+  }, [data]);
 
-    const page = document.getElementById("preview-page-modal");
-    if (!page) return;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const renderPage = (props: any) => {
+    const page = props.pageIndex + 1;
 
-    const rect = page.getBoundingClientRect();
+    return (
+      <div
+        id="preview-page-modal"
+        ref={pageContainerRef}
+        style={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          cursor: "default",
+          zIndex: 100,
+        }}
+        onClick={
+          !isMdScreen ? (e) => handlePageClick(e, e.currentTarget) : undefined
+        }
+      >
+        {props.canvasLayer.children}
 
-    const scaleX = 595 / (screenSize >= 768 ? 227 : rect.width);
-    const scaleY = 842 / (screenSize >= 768 ? 322 : rect.height);
+        {isMdScreen &&
+          user?.ttd &&
+          data?.map(
+            (
+              position: {
+                page: number;
+                x: number;
+                y: number;
+                w: number;
+              },
+              index: number,
+            ) =>
+              position.page === page && (
+                <DraggableOverlay
+                  key={`draggable-${index}`}
+                  src={user.ttd}
+                  initialPosition={{
+                    x: position.x / (595 / 224),
+                    y: position.y / (842 / 316),
+                  }}
+                  initialSize={{
+                    width: position.w / (595 / 224),
+                    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                    height: "auto" as any,
+                  }}
+                  containerRef={pageContainerRef}
+                  onPositionChange={(pos) => {
+                    const pageContainer = pageContainerRef.current;
+                    if (!pageContainer) return;
 
-    const scaledX = selection.x * scaleX;
-    const scaledY = selection.y * scaleY;
-    const scaledW = selection.w * scaleX;
+                    const rect = pageContainer.getBoundingClientRect();
 
-    const preparedData: EditData = {
-      id: data?.ID,
-      x: scaledX.toFixed(0),
-      y: scaledY.toFixed(0),
-      w: scaledW.toFixed(0),
+                    const scaleX = 595 / (screenSize >= 490 ? 227 : rect.width);
+                    const scaleY =
+                      842 / (screenSize >= 490 ? 322 : rect.height);
+
+                    const scaledX = pos.x * scaleX;
+                    const scaledY = pos.y * scaleY;
+                    const scaledW = pos.width * scaleX;
+
+                    // Update the specific position in the data
+                    const updatedPositions = data.map(
+                      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                      (p: any, i: number) =>
+                        i === index
+                          ? {
+                              ...p,
+                              x: scaledX,
+                              y: scaledY,
+                              w: scaledW,
+                            }
+                          : p,
+                    );
+
+                    setInitialPositions(updatedPositions);
+                    // Update the state or data with new positions
+                    // You might need to add a state update method here
+                    // setData(prevData => ({
+                    //   ...prevData,
+                    //   Positions: updatedPositions
+                    // }));
+
+                    setSelection({
+                      x: pos.x,
+                      y: pos.y,
+                      w: pos.width,
+                      height: 50,
+                    });
+
+                    setModalData((prev) => ({
+                      ...prev,
+                      x: scaledX.toFixed(0),
+                      y: scaledY.toFixed(0),
+                      w: scaledW.toFixed(0),
+                    }));
+                  }}
+                />
+              ),
+          )}
+
+        {!isMdScreen && selection && user?.ttd && (
+          <div
+            style={{
+              position: "absolute",
+              left: selection.x,
+              top: selection.y,
+              width: selection.w,
+              pointerEvents: "none",
+            }}
+          >
+            <img
+              src={user?.ttd}
+              alt="ttd"
+              style={{
+                width: "100%",
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const onSubmit: SubmitHandler<ModifyRequest> = () => {
+    // if (!selection) {
+    //   toast.error("Please select coordinates on the preview");
+    //   return;
+    // }
+
+    // const page = document.getElementById("preview-page-modal");
+    // if (!page) return;
+
+    // const rect = page.getBoundingClientRect();
+
+    // const scaleX = 595 / (screenSize >= 768 ? 227 : rect.width);
+    // const scaleY = 842 / (screenSize >= 768 ? 322 : rect.height);
+
+    // const scaledX = selection.x * scaleX;
+    // const scaledY = selection.y * scaleY;
+    // const scaledW = selection.w * scaleX;
+    const finalPosition = initialPositions.map((selection) => ({
+      page: selection.page,
+      x: Math.round(selection.x),
+      y: Math.round(selection.y),
+      w: Math.round(selection.w),
+      // height: (selection.height * scaleY).toFixed(0),
+    }));
+
+    const preparedData: ModifyRequest = {
+      id: id,
+      positions: finalPosition,
       password: "",
     };
 
@@ -265,12 +345,6 @@ export function EditModal({
                   <p className="text-center text-gray-500">File not uploaded</p>
                 )}
               </div>
-              <div className="mt-4 text-gray-700">
-                <LabelText>
-                  Selected Coordinates: X: {selection?.x.toFixed(2)}, Y:{" "}
-                  {selection?.y.toFixed(2)}, Width: {selection?.w.toFixed(2)}
-                </LabelText>
-              </div>
             </form>
           </FormProvider>
         </Modal.Body>
@@ -295,12 +369,8 @@ export function EditModal({
                   variant="primary"
                   size="base"
                   onClick={() => {
-                    if (!selection) {
-                      toast.error("Please select coordinates on the preview");
-                    } else {
-                      onSubmit(modalData);
-                      openModal();
-                    }
+                    onSubmit(modalData);
+                    openModal();
                   }}
                   className="w-1/2"
                 >

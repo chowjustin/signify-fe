@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import { SubmitModal } from "@/components/modal/variants/submitModal";
-import { EditData } from "./editModal";
+import { EditData, ModifyRequest } from "./editModal";
 
 type ModalReturnType = {
   openModal: () => void;
@@ -20,7 +20,8 @@ export function ModifyModal({
   data,
 }: {
   children: (props: ModalReturnType) => JSX.Element;
-  data: EditData;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  data: ModifyRequest;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const modalReturn: ModalReturnType = {
@@ -30,14 +31,14 @@ export function ModifyModal({
   const [response, setResponse] = useState("not submitted");
   const isPending = false;
 
-  const methods = useForm<EditData>({
+  const methods = useForm<ModifyRequest>({
     mode: "onChange",
   });
 
   const { reset, handleSubmit } = methods;
 
   const updateMutation = useMutation({
-    mutationFn: async (updatedData: EditData) => {
+    mutationFn: async (updatedData: ModifyRequest) => {
       return await api.patch(`/sign/modify`, updatedData);
     },
     onSuccess: () => {
@@ -48,11 +49,9 @@ export function ModifyModal({
     },
   });
 
-  const onSubmit = (formData: EditData) => {
+  const onSubmit = (formData: ModifyRequest) => {
     formData.id = data.id;
-    formData.x = data.x;
-    formData.y = data.y;
-    formData.w = data.w;
+    formData.positions = data.positions;
     updateMutation.mutate(formData);
   };
 

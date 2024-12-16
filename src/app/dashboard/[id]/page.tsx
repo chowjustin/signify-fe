@@ -50,6 +50,7 @@ function DetailAjuan() {
   const fileUrl = data?.Document;
 
   const [scaledSelections, setScaledSelections] = useState([]);
+  const [unscaledSelections, setunscaledSelections] = useState([]);
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const renderPage = (props: any) => {
@@ -133,7 +134,16 @@ function DetailAjuan() {
           h: 60 / scaleY,
         }));
 
+        const unscaled = data.Positions.map((position: AreaSelection) => ({
+          page: position.page,
+          x: position.x,
+          y: position.y,
+          w: position.w,
+          h: 60,
+        }));
+
         setScaledSelections(scaled);
+        setunscaledSelections(unscaled);
 
         clearInterval(intervalId);
       }
@@ -232,7 +242,7 @@ function DetailAjuan() {
             </Button>
           )}
         </RejectModal>
-        <EditModal data={scaledSelections} url={fileUrl}>
+        <EditModal data={unscaledSelections} url={fileUrl} id={data?.ID}>
           {({ openModal }) => (
             <Button
               variant="yellow"
