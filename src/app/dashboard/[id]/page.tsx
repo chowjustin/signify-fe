@@ -15,6 +15,14 @@ import { EditModal } from "./modal/editModal";
 import { useEffect, useState } from "react";
 import withAuth from "@/components/hoc/withAuth";
 
+type AreaSelection = {
+  page: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
 export default withAuth(DetailAjuan, "user");
 function DetailAjuan() {
   const path = usePathname();
@@ -38,62 +46,70 @@ function DetailAjuan() {
   const isSender = data?.IsSender === true ? true : false;
   const fileUrl = data?.Document;
 
-  const [scaledX, setScaledX] = useState(0);
-  const [scaledY, setScaledY] = useState(0);
-  const [scaledW, setScaledW] = useState(0);
-  const [scaledH, setScaledH] = useState(50);
+  const [scaledSelections, setScaledSelections] = useState([]);
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const renderPage = (props: any) => (
-    <div
-      id="preview-page"
-      style={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        cursor: "default",
-        zIndex: 100,
-      }}
-    >
-      {props.canvasLayer.children}
+  const renderPage = (props: any) => {
+    const { pageIndex } = props;
+    const pageNumber = pageIndex + 1;
 
+    return (
       <div
-        className={`${isSender && !isAccepted ? "flex" : "hidden"}`}
+        id="preview-page"
         style={{
-          position: "absolute",
-          left: scaledX,
-          top: scaledY,
-          width: scaledW,
-          height: scaledH,
-          border: "2px dashed blue",
-          backgroundColor: "rgba(0, 0, 255, 0.1)",
-          pointerEvents: "none",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          cursor: "default",
+          zIndex: 100,
         }}
-      />
-    </div>
-  );
+      >
+        {props.canvasLayer.children}
+        {scaledSelections.map(
+          (selection: AreaSelection, index: number) =>
+            selection.page === pageNumber && (
+              <div
+                className={`${isSender && !isAccepted ? "flex" : "hidden"}`}
+                key={index}
+                style={{
+                  position: "absolute",
+                  left: selection.x,
+                  top: selection.y,
+                  width: selection.w,
+                  height: selection.h,
+                  border: "2px dashed green",
+                  backgroundColor: "rgba(0, 255, 0, 0.1)",
+                  pointerEvents: "none",
+                }}
+              />
+            ),
+        )}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const checkPageExists = () => {
       const page = document.getElementById("preview-page");
-      if (page && data?.Position) {
-        const x = data.Position.x;
-        const y = data.Position.y;
-        const w = data.Position.w;
-
+      if (page && data?.Positions) {
         const rect = page.getBoundingClientRect();
 
         const scaleX = 595 / rect.width;
         const scaleY = 842 / rect.height;
 
-        setScaledX(x / scaleX);
-        setScaledY(y / scaleY);
-        setScaledW(w / scaleX);
-        setScaledH(50 / scaleY);
+        const scaled = data.Positions.map((position: AreaSelection) => ({
+          page: position.page,
+          x: position.x / scaleX,
+          y: position.y / scaleY,
+          w: position.w / scaleX,
+          h: 60 / scaleY,
+        }));
+
+        setScaledSelections(scaled);
 
         clearInterval(intervalId);
       }

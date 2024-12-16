@@ -271,9 +271,9 @@ export default function TambahAjuan() {
 
     const scaledSelections = selections.map((selection) => ({
       page: selection.page,
-      x: (selection.x * scaleX).toFixed(0),
-      y: (selection.y * scaleY).toFixed(0),
-      w: (selection.w * scaleX).toFixed(0),
+      x: Math.round(selection.x * scaleX),
+      y: Math.round(selection.y * scaleY),
+      w: Math.round(selection.w * scaleX),
       // height: (selection.height * scaleY).toFixed(0),
     }));
 
@@ -282,9 +282,10 @@ export default function TambahAjuan() {
     formData.append("topic", data.topic);
     formData.append("cover_letter", data.cover_letter);
 
-    scaledSelections.forEach((selection, index) => {
-      formData.append(`positions[${index}]`, JSON.stringify(selection));
-    });
+    // scaledSelections.forEach((selection, index) => {
+    //   formData.append(`positions[${index}]`, JSON.stringify(selection));
+    // });
+    formData.append("positions", JSON.stringify(scaledSelections));
 
     if (data.document && data.document[0]) {
       formData.append("document", data.document[0]);
