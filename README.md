@@ -11,3 +11,31 @@ After signatures are applied, users can quickly download the signed document, re
 | Justin Chow | 5025231087 |
 | Daniel Adhitthana | 5025231097 |
 | Muh. Khairul Amtsal | 5025231172 |
+
+## Getting Started
+
+### 1. Clone this repo:
+
+Using bash or other terminal
+
+```
+git clone https://github.com/chowjustin/signify-fe
+```
+
+### 2. Install dependencies
+
+It is encouraged to use **pnpm** so the husky hooks can work properly.
+
+```bash
+pnpm install
+```
+
+### 3. Run the development server
+
+You can start the server using this command:
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
