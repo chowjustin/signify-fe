@@ -8,9 +8,13 @@ After signatures are applied, users can quickly download the signed document, re
 
 | Nama           | NRP        |
 | ---            | ---        |
-| Justin Chow | 5025231087 |
-| Daniel Adhitthana | 5025231097 |
-| Muh. Khairul Amtsal | 5025231172 |
+| <a href="https://github.com/chowjustin">Justin Chow</a> | 5025231087 |
+| <a href="https://github.com/Someguy609">Daniel Adhitthana</a> | 5025231097 |
+| <a href="https://github.com/Amtsal99">Muh. Khairul Amtsal</a> | 5025231172 |
+
+
+
+
 
 ## Getting Started
 
